@@ -1,69 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import {
   Heart, Users, TrendingUp, Shield, ArrowRight,
-  Star, Quote, ChevronLeft, ChevronRight, Target, Clock, Share2,
-  Send, Mail, Phone, User as UserIcon, MapPin,
+  Star, Quote, Wallet, Utensils, Shirt, Stethoscope, Share2,
+  Send, Mail, Phone, User as UserIcon, MapPin, ShieldCheck,
+  FileText, Handshake, CreditCard, LineChart
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../lib/api';
 import { formatCurrency, formatDate } from '../lib/utils';
-import { useTheme } from '../context/ThemeContext';
 import { cn } from '../lib/utils';
 import Button from '../components/ui/Button';
-import Card from '../components/ui/Card';
-
-/* ── Hero images (fallback — replaced by API data) ─────────── */
-const FALLBACK_HERO_IMAGES = [
-  { src: '/Adama-City.jpg',   caption: 'Adama City — Heart of Oromia' },
-  { src: '/Adama_city2.jpg',  caption: 'Building a Stronger Community' },
-  { src: '/Adama_city3.jpg',  caption: 'Together We Make a Difference' },
-  { src: '/Adama_City1.jfif', caption: 'Support · Connect · Donate' },
-  { src: '/Adama_city.jfif',  caption: 'Empowering Adama Families' },
-];
-
-const SLIDE_DURATION = 5000; // ms per slide
 
 const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
 
 export default function HomePage() {
   const { t } = useTranslation();
-  const { isDark } = useTheme();
 
-  /* ── Slideshow state ───────────────────────────────────────── */
-  const [slide, setSlide]     = useState(0);
-  const [paused, setPaused]   = useState(false);
-  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
   const [contactForm, setContactForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
-
-  useEffect(() => {
-    if (paused) return;
-    const timer = setInterval(() => {
-      setDirection(1);
-      setSlide(prev => (prev + 1) % HERO_IMAGES.length);
-    }, SLIDE_DURATION);
-    return () => clearInterval(timer);
-  }, [paused]);
-
-  const goTo = (idx: number) => {
-    setDirection(idx > slide ? 1 : -1);
-    setSlide(idx);
-  };
-  const prev = () => { setDirection(-1); setSlide(s => (s - 1 + HERO_IMAGES.length) % HERO_IMAGES.length); };
-  const next = () => { setDirection(1);  setSlide(s => (s + 1) % HERO_IMAGES.length); };
 
   /* ── Data ──────────────────────────────────────────────────── */
   const { data: statsData } = useQuery({
     queryKey: ['donation-stats'],
     queryFn: () => api.get('/donations/stats').then(r => r.data.data),
-  });
-
-  const { data: apiHeroImages } = useQuery({
-    queryKey: ['hero-images'],
-    queryFn: () => api.get('/hero-images').then(r => r.data.data),
   });
 
   const { data: apiTestimonials } = useQuery({
@@ -74,7 +36,7 @@ export default function HomePage() {
   // Fetch 3 approved requests for home page
   const { data: featuredRequests } = useQuery({
     queryKey: ['featured-requests'],
-    queryFn: () => api.get('/support-requests', { params: { limit: 3 } }).then(r => r.data.data),
+    queryFn: () => api.get('/support-requests', { params: { limit: 2 } }).then(r => r.data.data),
   });
 
   const contactMutation = useMutation({
@@ -95,31 +57,12 @@ export default function HomePage() {
     contactMutation.mutate(contactForm);
   };
 
-  const HERO_IMAGES = apiHeroImages?.length
-    ? apiHeroImages.map((img: any) => ({ src: img.imageUrl, caption: img.caption }))
-    : FALLBACK_HERO_IMAGES;
-
-  const stats = [
-    { label: t('hero.stats_donors'),        value: statsData?.totalUsers ?? '1,200+',           icon: Users,    color: 'text-blue-500',   bg: 'bg-blue-50   dark:bg-blue-900/30' },
-    { label: t('hero.stats_beneficiaries'), value: statsData?.fulfilledRequests ?? '500+',       icon: Heart,    color: 'text-green-500',  bg: 'bg-green-50  dark:bg-green-900/30' },
-    { label: t('hero.stats_raised'),        value: statsData?.totalAmount ? formatCurrency(statsData.totalAmount) : 'ETB 2.5M+', icon: TrendingUp, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-900/30' },
-    { label: t('hero.stats_ngos'),          value: statsData?.totalDonations ?? '5,000+',        icon: Shield,   color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/30' },
-  ];
-
-  const steps = [
-    { icon: '📝', title: t('home.step1_title'), desc: t('home.step1_desc') },
-    { icon: '🤝', title: t('home.step2_title'), desc: t('home.step2_desc') },
-    { icon: '💳', title: t('home.step3_title'), desc: t('home.step3_desc') },
-    { icon: '📊', title: t('home.step4_title'), desc: t('home.step4_desc') },
-  ];
-
-  const categories = [
-    { icon: '💰', key: 'category_money',    color: 'from-green-400  to-green-600' },
-    { icon: '🍞', key: 'category_food',     color: 'from-amber-400  to-amber-600' },
-    { icon: '👕', key: 'category_clothes',  color: 'from-blue-400   to-blue-600' },
-    { icon: '💊', key: 'category_medicine', color: 'from-red-400    to-red-600' },
-    { icon: '🤲', key: 'category_other',    color: 'from-purple-400 to-purple-600' },
-  ];
+  const stats = {
+    donors: statsData?.totalUsers ?? '1,200+',
+    beneficiaries: statsData?.fulfilledRequests ?? '500+',
+    raised: statsData?.totalAmount ? formatCurrency(statsData.totalAmount) : 'ETB 2.5M+',
+    ngos: statsData?.totalDonations ?? '5,000+',
+  };
 
   const testimonials = apiTestimonials?.length
     ? apiTestimonials.map((t: any) => ({
@@ -134,173 +77,111 @@ export default function HomePage() {
         { name: 'Amina Ibrahim',  role: 'NGO Partner', text: 'Coordination between our NGO and city admin has never been more streamlined. Outstanding platform.',   avatar: 'AI' },
       ];
 
-  const slideVariants = {
-    enter:  (dir: number) => ({ opacity: 0, x: dir > 0 ? 80 : -80 }),
-    center: { opacity: 1, x: 0 },
-    exit:   (dir: number) => ({ opacity: 0, x: dir > 0 ? -80 : 80 }),
-  };
-
-  /* ── dark-aware section classes ───────────────────────────── */
-  const sectionLight = cn('py-20 transition-colors duration-300', isDark ? 'bg-slate-900' : 'bg-white');
-  const sectionMuted = cn('py-20 transition-colors duration-300', isDark ? 'bg-slate-800' : 'bg-gray-50');
-  const h2Class      = cn('text-4xl font-extrabold mb-4', isDark ? 'text-white' : 'text-gray-900');
-  const subClass     = cn('text-lg max-w-2xl mx-auto', isDark ? 'text-slate-400' : 'text-gray-500');
+  const waysToGive = [
+    { icon: Wallet,      key: 'category_money',    label: 'Financial Aid', colorClass: 'text-[var(--color-civic-emerald)] bg-[var(--color-civic-emerald)]/10 group-hover:bg-[var(--color-civic-emerald)]/20', hoverBorder: 'hover:border-[var(--color-civic-emerald)]/40' },
+    { icon: Utensils,    key: 'category_food',     label: 'Food Support',  colorClass: 'text-[var(--color-amber-cta)] bg-[var(--color-amber-cta)]/10 group-hover:bg-[var(--color-amber-cta)]/20', hoverBorder: 'hover:border-[var(--color-amber-cta)]/40' },
+    { icon: Shirt,       key: 'category_clothes',  label: 'Clothing',      colorClass: 'text-blue-400 bg-blue-500/10 group-hover:bg-blue-500/20', hoverBorder: 'hover:border-blue-400/40' },
+    { icon: Stethoscope, key: 'category_medicine', label: 'Medical Aid',   colorClass: 'text-red-400 bg-red-500/10 group-hover:bg-red-500/20', hoverBorder: 'hover:border-red-400/40' },
+    { icon: Heart,       key: 'category_other',    label: 'Other Support', colorClass: 'text-purple-400 bg-purple-500/10 group-hover:bg-purple-500/20', hoverBorder: 'hover:border-purple-400/40' },
+  ];
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden bg-[var(--color-surface)] text-[var(--color-text-ivory)]">
 
       {/* ════════════════════════════════════════════════
-          HERO — dynamic slideshow
+          HERO SECTION
       ════════════════════════════════════════════════ */}
-      <section
-        className="relative min-h-screen flex items-center overflow-hidden"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
-        {/* Slides */}
-        <AnimatePresence custom={direction} initial={false}>
-          <motion.div
-            key={slide}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.7, ease: 'easeInOut' }}
-            className="absolute inset-0"
-          >
-            <img
-              src={HERO_IMAGES[slide].src}
-              alt={HERO_IMAGES[slide].caption}
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Gradient overlay (always dark-green regardless of theme) */}
-        <div className="absolute inset-0 bg-gradient-to-r from-green-950/90 via-green-900/75 to-green-800/50 z-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10" />
-
-        {/* Animated blur circles */}
-        <div className="absolute top-20 right-20 w-72 h-72 bg-amber-400/10 rounded-full blur-3xl animate-pulse z-10" />
-        <div className="absolute bottom-20 left-10 w-56 h-56 bg-green-300/10 rounded-full blur-3xl animate-pulse delay-1000 z-10" />
-
-        {/* Content */}
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 w-full">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-
-            {/* Left — text */}
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} transition={{ duration: 0.7 }}>
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 mb-6">
-                <img src="/adama_logo.png" alt="" className="w-5 h-5 rounded-full object-cover" />
-                <span className="text-white/90 text-sm font-medium">Adama City Administration</span>
-                <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+      <section className="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-32 border-b border-[var(--border)]" id="home">
+        <div className="absolute inset-0 z-0">
+          <img src="/Adama-City.webp" alt="Adama City" className="w-full h-full object-cover filter brightness-[0.25]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-background)] via-[var(--color-surface)]/80 to-[var(--color-background)]/60"></div>
+          <div className="absolute inset-0 bg-[var(--color-civic-emerald)]/10 mix-blend-overlay"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            
+            {/* Left Hero Narrative */}
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} transition={{ duration: 0.7 }} className="lg:col-span-7 flex flex-col items-start space-y-6">
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[var(--color-surface-container-high)]/90 border border-[var(--border)] shadow-inner">
+                <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-civic-emerald)] animate-pulse"></span>
+                <span className="text-xs font-semibold text-[var(--color-civic-emerald)] tracking-wide">Adama City Administration</span>
               </div>
-
-              <h1 className="text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
-                {t('hero.title')}{' '}
-                <span className="text-amber-400 block mt-1">{t('hero.titleHighlight')}</span>
+              
+              <h1 className="text-5xl lg:text-7xl font-extrabold text-[var(--color-text-ivory)] tracking-tight leading-tight">
+                Together We <br className="hidden sm:inline"/>Build <span className="text-[var(--color-amber-cta)]">Wealthy Community</span>
               </h1>
-              <p className="text-lg text-white/80 leading-relaxed mb-10 max-w-xl">
-                {t('hero.subtitle')}
+              
+              <p className="text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+                Connecting generous donors with families in need across Adama City. Every contribution transforms lives and strengthens our community.
               </p>
-              <div className="flex flex-wrap gap-4">
+              
+              <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Link to="/donate">
-                  <Button size="lg" variant="secondary" rightIcon={<ArrowRight className="w-5 h-5" />}>
-                    {t('hero.cta_donate')}
-                  </Button>
+                  <button className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[var(--color-amber-cta)] hover:bg-[var(--color-amber-hover)] text-[#0b131b] text-sm font-semibold transition-all duration-150 shadow-lg active:scale-95">
+                    <span>{t('hero.cta_donate')}</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
                 </Link>
                 <Link to="/about">
-                  <Button size="lg" variant="outline"
-                    className="border-white/60 text-white hover:bg-white/10 hover:text-white hover:border-white">
-                    {t('hero.cta_learn')}
-                  </Button>
+                  <button className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-[var(--border)] hover:border-[var(--color-civic-emerald)] text-[var(--color-text-ivory)] hover:text-[var(--color-civic-emerald)] bg-[var(--color-surface-container-low)]/40 backdrop-blur-sm text-sm font-semibold transition-all duration-150">
+                    <span>{t('hero.cta_learn')}</span>
+                  </button>
                 </Link>
               </div>
-
-              {/* Slide caption */}
-              <p className="mt-8 text-white/50 text-sm italic">
-                {HERO_IMAGES[slide].caption}
-              </p>
             </motion.div>
-
-            {/* Right — stats glass cards */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="grid grid-cols-2 gap-4"
-            >
-              {stats.map((s, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + i * 0.1 }}>
-                  <div className="glass rounded-2xl p-5 text-center hover:scale-105 transition-transform cursor-default">
-                    <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3', s.bg)}>
-                      <s.icon className={cn('w-6 h-6', s.color)} />
+            
+            {/* Right Quick Metrics Bento Grid */}
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="lg:col-span-5">
+              <div className="relative bg-[var(--color-surface-container-low)]/80 backdrop-blur-xl border border-[var(--border)] rounded-3xl p-6 lg:p-8 shadow-2xl">
+                <div className="flex items-center justify-between pb-6 border-b border-[var(--border)] mb-6">
+                  <div>
+                    <h2 className="text-xl font-bold text-[var(--text-main)]">Civic Snapshot</h2>
+                    <p className="text-xs text-[var(--text-muted)]">Live municipal dashboard metrics</p>
+                  </div>
+                  <Shield className="w-7 h-7 text-[var(--color-civic-emerald)]" />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-[var(--color-surface-container)] p-5 rounded-2xl border border-[var(--border)] flex flex-col justify-between space-y-3">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                      <Users className="w-5 h-5" />
                     </div>
-                    <p className="text-2xl font-bold text-white">{s.value}</p>
-                    <p className="text-xs text-white/70 mt-1">{s.label}</p>
+                    <div>
+                      <div className="text-2xl font-bold text-[var(--text-main)]">{stats.donors}</div>
+                      <div className="text-xs text-[var(--text-muted)]">Active Donors</div>
+                    </div>
                   </div>
-                </motion.div>
-              ))}
+                  <div className="bg-[var(--color-surface-container)] p-5 rounded-2xl border border-[var(--border)] flex flex-col justify-between space-y-3">
+                    <div className="w-10 h-10 rounded-xl bg-green-500/10 text-[var(--color-civic-emerald)] flex items-center justify-center">
+                      <Heart className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-[var(--text-main)]">{stats.beneficiaries}</div>
+                      <div className="text-xs text-[var(--text-muted)]">Families Helped</div>
+                    </div>
+                  </div>
+                  <div className="bg-[var(--color-surface-container)] p-5 rounded-2xl border border-[var(--border)] flex flex-col justify-between space-y-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-[var(--color-amber-cta)] flex items-center justify-center">
+                      <TrendingUp className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="text-xl font-bold text-[var(--text-main)]">{stats.raised}</div>
+                      <div className="text-xs text-[var(--text-muted)]">ETB Raised</div>
+                    </div>
+                  </div>
+                  <div className="bg-[var(--color-surface-container)] p-5 rounded-2xl border border-[var(--border)] flex flex-col justify-between space-y-3">
+                    <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                      <ShieldCheck className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-[var(--text-main)]">{stats.ngos}</div>
+                      <div className="text-xs text-[var(--text-muted)]">NGO Partners</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </motion.div>
-          </div>
-        </div>
-
-        {/* ── Slideshow controls ─────────────────────── */}
-        {/* Prev / Next arrows */}
-        <button onClick={prev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center backdrop-blur-sm transition-all">
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <button onClick={next}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center backdrop-blur-sm transition-all">
-          <ChevronRight className="w-5 h-5" />
-        </button>
-
-        {/* Dot indicators */}
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
-          {HERO_IMAGES.map((_: any, i: number) => (
-            <button key={i} onClick={() => goTo(i)}
-              className={cn(
-                'rounded-full transition-all duration-300',
-                i === slide ? 'w-6 h-2.5 bg-amber-400' : 'w-2.5 h-2.5 bg-white/40 hover:bg-white/70',
-              )}
-            />
-          ))}
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1 animate-bounce">
-          <div className="w-5 h-8 border-2 border-white/30 rounded-full flex justify-center pt-1.5">
-            <div className="w-1 h-2 bg-white/50 rounded-full" />
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════
-          IMPACT STATS
-      ════════════════════════════════════════════════ */}
-      <section className={sectionLight}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
-            variants={fadeUp} transition={{ duration: 0.6 }} className="text-center mb-14">
-            <h2 className={h2Class}>{t('home.impact_title')}</h2>
-            <p className={subClass}>{t('home.impact_subtitle')}</p>
-          </motion.div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((s, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                <Card hover className="text-center p-8">
-                  <div className={cn('w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4', s.bg)}>
-                    <s.icon className={cn('w-7 h-7', s.color)} />
-                  </div>
-                  <p className={cn('text-3xl font-extrabold', isDark ? 'text-white' : 'text-gray-900')}>{s.value}</p>
-                  <p className={cn('text-sm mt-1 font-medium', isDark ? 'text-slate-400' : 'text-gray-500')}>{s.label}</p>
-                </Card>
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>
@@ -308,75 +189,54 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════════
           HOW IT WORKS
       ════════════════════════════════════════════════ */}
-      <section className={sectionMuted}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
-            variants={fadeUp} className="text-center mb-14">
-            <h2 className={h2Class}>{t('home.how_title')}</h2>
-            <p className={cn('text-lg', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('home.how_subtitle')}</p>
+      <section className="py-20 lg:py-24 bg-[var(--color-surface)] border-b border-[var(--border)]" id="how-it-works">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[var(--text-main)]">{t('home.how_title')}</h2>
+            <p className="text-[var(--text-muted)]">{t('home.how_subtitle')}</p>
           </motion.div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {steps.map((step, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.15 }}>
-                <div className="relative">
-                  {i < steps.length - 1 && (
-                    <div className={cn('hidden lg:block absolute top-10 left-full w-full h-0.5 z-0 -translate-y-1/2',
-                      isDark ? 'bg-slate-600' : 'bg-green-200')} />
-                  )}
-                  <Card className="relative z-10 text-center p-7 h-full">
-                    <div className={cn('w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm',
-                      isDark ? 'bg-slate-700' : 'bg-gradient-to-br from-green-50 to-green-100')}>
-                      {step.icon}
-                    </div>
-                    <div className="w-7 h-7 bg-green-700 text-white rounded-full text-xs font-bold flex items-center justify-center mx-auto mb-3">
-                      {i + 1}
-                    </div>
-                    <h3 className={cn('text-base font-bold mb-2', isDark ? 'text-white' : 'text-gray-900')}>{step.title}</h3>
-                    <p className={cn('text-sm leading-relaxed', isDark ? 'text-slate-400' : 'text-gray-500')}>{step.desc}</p>
-                  </Card>
+          
+          <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="hidden lg:block absolute top-12 left-16 right-16 h-0.5 border-t-2 border-dashed border-[var(--border)] -z-0"></div>
+            
+            {[
+              { icon: FileText,   title: t('home.step1_title'), desc: t('home.step1_desc'), color: 'text-blue-400' },
+              { icon: Handshake,  title: t('home.step2_title'), desc: t('home.step2_desc'), color: 'text-[var(--color-amber-cta)]' },
+              { icon: CreditCard, title: t('home.step3_title'), desc: t('home.step3_desc'), color: 'text-purple-400' },
+              { icon: LineChart,  title: t('home.step4_title'), desc: t('home.step4_desc'), color: 'text-[var(--color-civic-emerald)]' },
+            ].map((step, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="relative z-10 flex flex-col items-center text-center bg-[var(--color-surface-container-low)] p-6 rounded-2xl border border-[var(--border)]">
+                <div className={`relative w-16 h-16 rounded-2xl bg-[var(--color-surface-container-high)] border border-[var(--border)] flex items-center justify-center ${step.color} mb-5 shadow-lg`}>
+                  <step.icon className="w-7 h-7" />
+                  <span className="absolute -bottom-2 -right-2 w-7 h-7 rounded-full bg-[var(--color-civic-emerald)] text-white text-xs font-bold flex items-center justify-center shadow">
+                    {i + 1}
+                  </span>
                 </div>
+                <h3 className="font-bold text-[var(--text-main)] mb-2">{step.title}</h3>
+                <p className="text-sm text-[var(--text-muted)] leading-relaxed">{step.desc}</p>
               </motion.div>
             ))}
           </div>
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-            transition={{ delay: 0.5 }} className="text-center mt-10">
-            <Link to="/donate">
-              <Button size="lg" rightIcon={<ArrowRight className="w-5 h-5" />}>
-                {t('hero.cta_donate')}
-              </Button>
-            </Link>
-          </motion.div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════
-          DONATION CATEGORIES
+          WAYS TO GIVE
       ════════════════════════════════════════════════ */}
-      <section className={sectionLight}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
-            variants={fadeUp} className="text-center mb-14">
-            <h2 className={h2Class}>{t('home.categories_title')}</h2>
-          </motion.div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
-            {categories.map((cat, i) => (
-              <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+      <section className="py-20 lg:py-24 bg-[var(--color-surface-container-lowest)] border-b border-[var(--border)]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[var(--text-main)]">Ways to Give</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
+            {waysToGive.map((cat, i) => (
+              <motion.div key={cat.key} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
                 <Link to="/donate">
-                  <div className={cn(
-                    'group text-center p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg',
-                    isDark
-                      ? 'bg-slate-800 border-slate-700 hover:border-green-500'
-                      : 'bg-white border-gray-100 hover:border-green-200',
-                  )}>
-                    <div className={cn('w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center mx-auto mb-3 text-2xl group-hover:scale-110 transition-transform shadow-md', cat.color)}>
-                      {cat.icon}
+                  <div className={`group bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] p-6 rounded-2xl border border-[var(--border)] ${cat.hoverBorder} transition-all duration-200 flex flex-col items-center text-center cursor-pointer`}>
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-colors ${cat.colorClass}`}>
+                      <cat.icon className="w-8 h-8" strokeWidth={1.5} />
                     </div>
-                    <p className={cn('text-sm font-semibold transition-colors group-hover:text-green-500',
-                      isDark ? 'text-slate-300' : 'text-gray-700')}>
-                      {t(`home.${cat.key}`)}
-                    </p>
+                    <span className="font-semibold text-[var(--text-main)]">{cat.label}</span>
                   </div>
                 </Link>
               </motion.div>
@@ -389,41 +249,36 @@ export default function HomePage() {
           RECENT DONATIONS
       ════════════════════════════════════════════════ */}
       {statsData?.recentDonations?.length > 0 && (
-        <section className={sectionMuted}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-10">
-              <h2 className={cn('text-3xl font-extrabold', isDark ? 'text-white' : 'text-gray-900')}>
-                {t('home.recent_donations')}
-              </h2>
-              <Link to="/donate"
-                className="text-green-500 font-semibold text-sm hover:underline flex items-center gap-1">
-                {t('home.view_all')} <ArrowRight className="w-4 h-4" />
+        <section className="py-16 lg:py-20 bg-[var(--color-surface)] border-b border-[var(--border)]">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text-main)]">{t('home.recent_donations')}</h2>
+              <Link to="/donate" className="inline-flex items-center gap-1 text-[var(--color-civic-emerald)] hover:text-emerald-400 text-sm font-semibold transition-colors">
+                <span>{t('home.view_all')}</span>
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {statsData.recentDonations.slice(0, 6).map((d: any, i: number) => (
-                <motion.div key={d.id} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
-                  <Card hover>
-                    <div className="flex items-center gap-4">
-                      <div className={cn('w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm shrink-0',
-                        isDark ? 'bg-green-900/40 text-green-400' : 'bg-green-100 text-green-700')}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {statsData.recentDonations.slice(0, 3).map((d: any, i: number) => (
+                <motion.div key={d.id} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                  <div className="bg-[var(--color-surface-container-low)] p-5 rounded-2xl border border-[var(--border)] flex items-center justify-between">
+                    <div className="flex items-center space-x-3.5">
+                      <div className="w-11 h-11 rounded-full bg-[var(--color-civic-emerald)]/10 text-[var(--color-civic-emerald)] flex items-center justify-center font-bold text-sm border border-[var(--color-civic-emerald)]/30">
                         {d.isAnonymous ? '?' : `${d.donor?.firstName?.[0]}${d.donor?.lastName?.[0]}`}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className={cn('text-sm font-semibold truncate', isDark ? 'text-white' : 'text-gray-800')}>
-                          {d.isAnonymous ? 'Anonymous Donor' : `${d.donor?.firstName} ${d.donor?.lastName}`}
-                        </p>
-                        <p className={cn('text-xs', isDark ? 'text-slate-500' : 'text-gray-400')}>
-                          {formatDate(d.createdAt)}
-                        </p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-base font-bold text-green-500">{formatCurrency(d.amount || 0)}</p>
-                        <p className={cn('text-xs', isDark ? 'text-slate-500' : 'text-gray-400')}>{d.donationType}</p>
+                      <div>
+                        <h4 className="text-sm font-semibold text-[var(--text-main)]">
+                          {d.isAnonymous ? 'Anonymous' : `${d.donor?.firstName} ${d.donor?.lastName}`}
+                        </h4>
+                        <p className="text-xs text-[var(--text-muted)]">{formatDate(d.createdAt)}</p>
                       </div>
                     </div>
-                  </Card>
+                    <div className="text-right">
+                      <span className="px-2.5 py-1 rounded-full bg-[var(--color-amber-cta)]/10 text-[var(--color-amber-cta)] border border-[var(--color-amber-cta)]/20 text-xs font-semibold whitespace-nowrap">
+                        {formatCurrency(d.amount || 0)}
+                      </span>
+                    </div>
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -432,130 +287,71 @@ export default function HomePage() {
       )}
 
       {/* ════════════════════════════════════════════════
-          TESTIMONIALS
-      ════════════════════════════════════════════════ */}
-      <section className={sectionLight}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
-            variants={fadeUp} className="text-center mb-14">
-            <h2 className={h2Class}>What People Say</h2>
-            <p className={cn('text-lg', isDark ? 'text-slate-400' : 'text-gray-500')}>Voices from our community</p>
-          </motion.div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((item: any, i: number) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.15 }}>
-                <Card className="h-full flex flex-col p-7">
-                  <Quote className={cn('w-8 h-8 mb-4', isDark ? 'text-green-800' : 'text-green-200')} />
-                  <p className={cn('text-sm leading-relaxed flex-1 italic', isDark ? 'text-slate-300' : 'text-gray-600')}>
-                    "{item.text}"
-                  </p>
-                  <div className={cn('flex items-center gap-3 mt-5 pt-5 border-t', isDark ? 'border-slate-700' : 'border-gray-100')}>
-                    <div className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center font-bold text-xs shrink-0">
-                      {item.avatar}
-                    </div>
-                    <div>
-                      <p className={cn('text-sm font-semibold', isDark ? 'text-white' : 'text-gray-800')}>{item.name}</p>
-                      <p className="text-xs text-green-500">{item.role}</p>
-                    </div>
-                    <div className="ml-auto flex gap-0.5">
-                      {[...Array(5)].map((_, s) => (
-                        <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════
           FEATURED SUPPORT REQUESTS
       ════════════════════════════════════════════════ */}
       {featuredRequests && featuredRequests.length > 0 && (
-        <section className={sectionMuted}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
-              variants={fadeUp} className="text-center mb-10">
-              <h2 className={h2Class}>People Who Need Your Help</h2>
-              <p className={cn('text-lg', isDark ? 'text-slate-400' : 'text-gray-500')}>
-                These community members have verified support requests waiting
-              </p>
-            </motion.div>
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <section className="py-20 lg:py-24 bg-[var(--color-surface)] border-b border-[var(--border)]">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+              <h2 className="text-3xl lg:text-4xl font-bold text-[var(--text-main)]">People Who Need Your Help</h2>
+              <p className="text-[var(--text-muted)]">These community members have verified support requests waiting</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {featuredRequests.map((req: any, i: number) => {
                 const pct = req.goalAmount ? Math.min((req.raisedAmount / req.goalAmount) * 100, 100) : 0;
-                const urgencyMap: Record<number, { label: string; color: string }> = {
-                  5: { label: '🚨 Emergency', color: 'text-red-600' },
-                  4: { label: '🔴 Critical', color: 'text-orange-600' },
-                  3: { label: '🟠 High', color: 'text-amber-600' },
-                  2: { label: '🟡 Medium', color: 'text-yellow-600' },
-                  1: { label: '🟢 Standard', color: 'text-green-600' },
-                };
-                const urgency = urgencyMap[req.urgencyLevel] || urgencyMap[1];
                 return (
-                  <motion.div key={req.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                    <Card className="flex flex-col h-full" padding="none">
-                      {/* Category bar */}
-                      <div className="gradient-hero h-2 rounded-t-2xl" />
-                      <div className="p-5 flex flex-col flex-1">
-                        <div className="flex items-start justify-between gap-2 mb-3">
-                          <h3 className={cn('font-bold text-sm flex-1', isDark ? 'text-white' : 'text-gray-900')}>
-                            {req.title}
-                          </h3>
-                          <span className={cn('text-xs font-semibold shrink-0', urgency.color)}>
-                            {urgency.label}
-                          </span>
-                        </div>
-                        <p className={cn('text-xs leading-relaxed line-clamp-3 flex-1 mb-4', isDark ? 'text-slate-400' : 'text-gray-500')}>
-                          {req.description}
-                        </p>
-                        {req.goalAmount && (
-                          <div className="mb-4">
-                            <div className="flex justify-between text-xs mb-1.5 font-medium">
-                              <span className="text-green-500">{formatCurrency(req.raisedAmount)} raised</span>
-                              <span className={isDark ? 'text-slate-500' : 'text-gray-400'}>{Math.round(pct)}% of {formatCurrency(req.goalAmount)}</span>
-                            </div>
-                            <div className={cn('h-2 rounded-full overflow-hidden', isDark ? 'bg-slate-700' : 'bg-gray-200')}>
-                              <motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }}
-                                viewport={{ once: true }} transition={{ duration: 0.8 }}
-                                className="h-full rounded-full bg-gradient-to-r from-green-500 to-emerald-400" />
-                            </div>
-                          </div>
-                        )}
-                        <div className={cn('flex items-center gap-2 text-xs mb-4', isDark ? 'text-slate-500' : 'text-gray-400')}>
-                          <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-[10px]">
-                            {req.user?.firstName?.[0]}
-                          </div>
-                          {req.user?.firstName} {req.user?.lastName}
-                          <span className="ml-auto">{req.category}</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <Link to={`/donate?tab=requests`} className="flex-1">
-                            <Button size="sm" className="w-full" rightIcon={<Heart className="w-3.5 h-3.5" />}>
-                              Support Now
-                            </Button>
-                          </Link>
-                          <a href={`https://t.me/share/url?url=${encodeURIComponent(`https://wedonate.et/donate/request/${req.id}`)}&text=${encodeURIComponent(`Help: ${req.title}`)}`}
-                            target="_blank" rel="noopener noreferrer"
-                            className="p-2 rounded-xl bg-blue-500 text-white hover:opacity-80 transition-opacity">
-                            <Share2 className="w-4 h-4" />
-                          </a>
-                        </div>
+                  <motion.div key={req.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="bg-[var(--color-surface-container-low)] p-6 lg:p-8 rounded-3xl border border-[var(--border)] hover:border-gray-600 transition-colors flex flex-col justify-between space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xl font-bold text-[var(--text-main)] truncate pr-2">{req.title}</h3>
+                        <span className="px-3 py-1 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-semibold flex items-center gap-1 shrink-0">
+                          🚨 Urgent
+                        </span>
                       </div>
-                    </Card>
+                      <p className="text-sm text-[var(--text-muted)] line-clamp-2">{req.description}</p>
+                      
+                      {req.goalAmount && (
+                        <div className="space-y-2 pt-2">
+                          <div className="flex justify-between text-xs text-[var(--text-muted)]">
+                            <span className="text-[var(--color-civic-emerald)] font-semibold">{formatCurrency(req.raisedAmount)} raised</span>
+                            <span>{Math.round(pct)}% of {formatCurrency(req.goalAmount)}</span>
+                          </div>
+                          <div className="w-full h-2.5 rounded-full bg-[var(--color-surface-container-highest)] overflow-hidden">
+                            <motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} className="h-full bg-[var(--color-civic-emerald)] rounded-full"></motion.div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center justify-between pt-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-7 h-7 rounded-full bg-blue-500/20 text-blue-400 text-xs flex items-center justify-center font-bold">{req.user?.firstName?.[0]}</div>
+                          <span className="text-sm text-[var(--text-main)]">{req.user?.firstName}</span>
+                        </div>
+                        <span className="px-2.5 py-0.5 rounded-md bg-[var(--color-surface-container-highest)] text-[var(--text-muted)] text-xs font-semibold uppercase">{req.category}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 pt-4 border-t border-[var(--border)]">
+                      <Link to={`/donate?tab=requests`} className="flex-1">
+                        <button className="w-full py-3 px-4 rounded-xl bg-[var(--color-civic-emerald-deep)] hover:bg-[var(--color-civic-emerald)] text-white text-sm font-semibold transition-colors flex items-center justify-center gap-1.5 shadow">
+                          <span>Support Now</span>
+                          <Heart className="w-4 h-4" />
+                        </button>
+                      </Link>
+                      <a href={`https://t.me/share/url?url=${encodeURIComponent(`https://wedonate.et/donate/request/${req.id}`)}&text=${encodeURIComponent(`Help: ${req.title}`)}`} target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl border border-[var(--border)] hover:bg-[var(--color-surface-container)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors">
+                        <Share2 className="w-5 h-5" />
+                      </a>
+                    </div>
                   </motion.div>
                 );
               })}
             </div>
-            <div className="text-center">
-              <Link to="/donate?tab=requests">
-                <Button variant="outline" size="lg" rightIcon={<ArrowRight className="w-4 h-4" />}>
-                  View All Requests
-                </Button>
+            
+            <div className="text-center mt-12">
+              <Link to="/donate?tab=requests" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-[var(--border)] hover:border-[var(--color-civic-emerald)] text-[var(--color-civic-emerald)] hover:bg-[var(--color-surface-container)] font-semibold text-sm transition-colors">
+                <span>View All Requests</span>
+                <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </div>
@@ -563,140 +359,131 @@ export default function HomePage() {
       )}
 
       {/* ════════════════════════════════════════════════
-          CONTACT US
+          TESTIMONIALS
       ════════════════════════════════════════════════ */}
-      <section className={sectionMuted}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
-            variants={fadeUp} className="text-center mb-14">
-            <h2 className={h2Class}>Contact Us</h2>
-            <p className={subClass}>Have questions or want to get involved? Send us a message.</p>
-          </motion.div>
-          <div className="grid lg:grid-cols-2 gap-10">
-            {/* Contact Info */}
-            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.6 }}>
-              <Card className="h-full p-8">
-                <h3 className={cn('text-xl font-bold mb-6', isDark ? 'text-white' : 'text-gray-900')}>
-                  Get in Touch
-                </h3>
-                <div className="space-y-5">
-                  <div className="flex items-center gap-4">
-                    <div className={cn('w-11 h-11 rounded-xl flex items-center justify-center shrink-0',
-                      isDark ? 'bg-green-900/30' : 'bg-green-50')}>
-                      <MapPin className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                      <p className={cn('text-sm font-semibold', isDark ? 'text-white' : 'text-gray-900')}>Address</p>
-                      <p className={cn('text-sm', isDark ? 'text-slate-400' : 'text-gray-500')}>Adama City Administration, Oromia, Ethiopia</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className={cn('w-11 h-11 rounded-xl flex items-center justify-center shrink-0',
-                      isDark ? 'bg-green-900/30' : 'bg-green-50')}>
-                      <Mail className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                      <p className={cn('text-sm font-semibold', isDark ? 'text-white' : 'text-gray-900')}>Email</p>
-                      <p className={cn('text-sm', isDark ? 'text-slate-400' : 'text-gray-500')}>info@wedonate.et</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className={cn('w-11 h-11 rounded-xl flex items-center justify-center shrink-0',
-                      isDark ? 'bg-green-900/30' : 'bg-green-50')}>
-                      <Phone className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                      <p className={cn('text-sm font-semibold', isDark ? 'text-white' : 'text-gray-900')}>Phone</p>
-                      <p className={cn('text-sm', isDark ? 'text-slate-400' : 'text-gray-500')}>+251 91 234 5678</p>
-                    </div>
-                  </div>
-                </div>
-                <div className={cn('mt-8 p-4 rounded-xl', isDark ? 'bg-slate-700/50' : 'bg-green-50')}>
-                  <p className={cn('text-sm', isDark ? 'text-slate-300' : 'text-gray-600')}>
-                    Our team typically responds within 24–48 hours during business days.
+      <section className="py-20 lg:py-24 bg-[var(--color-surface-container-lowest)] border-b border-[var(--border)]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[var(--text-main)]">What People Say</h2>
+            <p className="text-[var(--text-muted)]">Voices from our community</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((item: any, i: number) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="bg-[var(--color-surface-container)] p-6 lg:p-8 rounded-2xl border border-[var(--border)] flex flex-col justify-between space-y-6">
+                <div className="space-y-4">
+                  <Quote className="text-[var(--color-civic-emerald)] w-10 h-10" />
+                  <p className="text-[var(--text-main)] italic leading-relaxed">
+                    "{item.text}"
                   </p>
                 </div>
-              </Card>
-            </motion.div>
-
-            {/* Contact Form */}
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.15 }}>
-              <Card className="p-8">
-                <form onSubmit={handleContactSubmit} className="space-y-4">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className={cn('block text-sm font-medium mb-1.5', isDark ? 'text-slate-300' : 'text-gray-700')}>
-                        Name *
-                      </label>
-                      <div className="relative">
-                        <UserIcon className={cn('absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4', isDark ? 'text-slate-500' : 'text-gray-400')} />
-                        <input type="text" value={contactForm.name}
-                          onChange={e => setContactForm(p => ({ ...p, name: e.target.value }))}
-                          placeholder="Your full name"
-                          className={cn('w-full rounded-xl border pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors',
-                            isDark ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-500' : 'bg-white border-gray-200 placeholder:text-gray-400')} />
-                      </div>
+                <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-[var(--color-civic-emerald)]/20 text-[var(--color-civic-emerald)] font-bold flex items-center justify-center text-sm">
+                      {item.avatar}
                     </div>
                     <div>
-                      <label className={cn('block text-sm font-medium mb-1.5', isDark ? 'text-slate-300' : 'text-gray-700')}>
-                        Email *
-                      </label>
-                      <div className="relative">
-                        <Mail className={cn('absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4', isDark ? 'text-slate-500' : 'text-gray-400')} />
-                        <input type="email" value={contactForm.email}
-                          onChange={e => setContactForm(p => ({ ...p, email: e.target.value }))}
-                          placeholder="you@example.com"
-                          className={cn('w-full rounded-xl border pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors',
-                            isDark ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-500' : 'bg-white border-gray-200 placeholder:text-gray-400')} />
-                      </div>
+                      <h4 className="text-sm font-semibold text-[var(--text-main)]">{item.name}</h4>
+                      <span className="text-xs text-[var(--color-civic-emerald)]">{item.role}</span>
                     </div>
                   </div>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className={cn('block text-sm font-medium mb-1.5', isDark ? 'text-slate-300' : 'text-gray-700')}>
-                        Phone
-                      </label>
-                      <div className="relative">
-                        <Phone className={cn('absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4', isDark ? 'text-slate-500' : 'text-gray-400')} />
-                        <input type="tel" value={contactForm.phone}
-                          onChange={e => setContactForm(p => ({ ...p, phone: e.target.value }))}
-                          placeholder="+251 91 234 5678"
-                          className={cn('w-full rounded-xl border pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors',
-                            isDark ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-500' : 'bg-white border-gray-200 placeholder:text-gray-400')} />
-                      </div>
-                    </div>
-                    <div>
-                      <label className={cn('block text-sm font-medium mb-1.5', isDark ? 'text-slate-300' : 'text-gray-700')}>
-                        Subject *
-                      </label>
-                      <input type="text" value={contactForm.subject}
-                        onChange={e => setContactForm(p => ({ ...p, subject: e.target.value }))}
-                        placeholder="How can we help?"
-                        className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors',
-                          isDark ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-500' : 'bg-white border-gray-200 placeholder:text-gray-400')} />
-                    </div>
+                  <div className="flex text-[var(--color-amber-cta)] text-sm">
+                    {[...Array(5)].map((_, s) => <Star key={s} className="w-4 h-4 fill-current" />)}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════
+          CONTACT US
+      ════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-[var(--color-surface)] border-b border-[var(--border)]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[var(--text-main)]">Contact Us</h2>
+            <p className="text-[var(--text-muted)]">Have questions or want to get involved? Send us a message.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start max-w-6xl mx-auto">
+            <div className="lg:col-span-5 bg-[var(--color-surface-container-low)] p-8 rounded-3xl border border-[var(--border)] space-y-8">
+              <h3 className="text-xl font-bold text-[var(--text-main)]">Get in Touch</h3>
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-11 h-11 rounded-xl bg-[var(--color-civic-emerald)]/10 text-[var(--color-civic-emerald)] flex items-center justify-center shrink-0">
+                    <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <label className={cn('block text-sm font-medium mb-1.5', isDark ? 'text-slate-300' : 'text-gray-700')}>
-                      Message *
-                    </label>
-                    <textarea value={contactForm.message} rows={5}
-                      onChange={e => setContactForm(p => ({ ...p, message: e.target.value }))}
-                      placeholder="Write your message here..."
-                      className={cn('w-full rounded-xl border px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors',
-                        isDark ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-500' : 'bg-white border-gray-200 placeholder:text-gray-400')} />
+                    <span className="text-xs text-[var(--text-muted)]">Address</span>
+                    <p className="text-sm font-medium text-[var(--text-main)] mt-0.5">Adama City Administration, Oromia, Ethiopia</p>
                   </div>
-                  <Button type="submit" size="lg" className="w-full"
-                    leftIcon={<Send className="w-4 h-4" />}
-                    isLoading={contactMutation.isPending}
-                    disabled={!contactForm.name.trim() || !contactForm.email.trim() || !contactForm.subject.trim() || !contactForm.message.trim()}>
-                    Send Message
-                  </Button>
-                </form>
-              </Card>
-            </motion.div>
+                </div>
+                <div className="flex items-start space-x-4">
+                  <div className="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-xs text-[var(--text-muted)]">Email</span>
+                    <p className="text-sm font-medium text-[var(--text-main)] mt-0.5">info@wedonate.et</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-4">
+                  <div className="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center shrink-0">
+                    <Phone className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-xs text-[var(--text-muted)]">Phone</span>
+                    <p className="text-sm font-medium text-[var(--text-main)] mt-0.5">+251 91 234 5678</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 rounded-2xl bg-[var(--color-surface-container)] border border-[var(--border)] text-sm text-[var(--text-muted)] leading-relaxed">
+                Our team typically responds within 24–48 hours during business days.
+              </div>
+            </div>
+            
+            <div className="lg:col-span-7 bg-[var(--color-surface-container-low)] p-8 rounded-3xl border border-[var(--border)]">
+              <form onSubmit={handleContactSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-[var(--text-main)]">Name *</label>
+                    <div className="relative">
+                      <UserIcon className="absolute left-3.5 top-3.5 text-[var(--text-muted)] w-5 h-5" />
+                      <input type="text" value={contactForm.name} onChange={e => setContactForm(p => ({...p, name: e.target.value}))} className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container)] rounded-xl border border-[var(--border)] focus:border-[var(--color-civic-emerald)] focus:ring-1 focus:ring-[var(--color-civic-emerald)] text-[var(--text-main)] text-sm outline-none transition-colors" placeholder="Your full name" required />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-[var(--text-main)]">Email *</label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-3.5 text-[var(--text-muted)] w-5 h-5" />
+                      <input type="email" value={contactForm.email} onChange={e => setContactForm(p => ({...p, email: e.target.value}))} className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container)] rounded-xl border border-[var(--border)] focus:border-[var(--color-civic-emerald)] focus:ring-1 focus:ring-[var(--color-civic-emerald)] text-[var(--text-main)] text-sm outline-none transition-colors" placeholder="you@example.com" required />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-[var(--text-main)]">Phone</label>
+                    <div className="relative">
+                      <Phone className="absolute left-3.5 top-3.5 text-[var(--text-muted)] w-5 h-5" />
+                      <input type="tel" value={contactForm.phone} onChange={e => setContactForm(p => ({...p, phone: e.target.value}))} className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container)] rounded-xl border border-[var(--border)] focus:border-[var(--color-civic-emerald)] focus:ring-1 focus:ring-[var(--color-civic-emerald)] text-[var(--text-main)] text-sm outline-none transition-colors" placeholder="+251 91 234 5678" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-[var(--text-main)]">Subject *</label>
+                    <input type="text" value={contactForm.subject} onChange={e => setContactForm(p => ({...p, subject: e.target.value}))} className="w-full px-4 py-3 bg-[var(--color-surface-container)] rounded-xl border border-[var(--border)] focus:border-[var(--color-civic-emerald)] focus:ring-1 focus:ring-[var(--color-civic-emerald)] text-[var(--text-main)] text-sm outline-none transition-colors" placeholder="How can we help?" required />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-[var(--text-main)]">Message *</label>
+                  <textarea value={contactForm.message} onChange={e => setContactForm(p => ({...p, message: e.target.value}))} className="w-full px-4 py-3 bg-[var(--color-surface-container)] rounded-xl border border-[var(--border)] focus:border-[var(--color-civic-emerald)] focus:ring-1 focus:ring-[var(--color-civic-emerald)] text-[var(--text-main)] text-sm outline-none transition-colors resize-none" placeholder="Write your message here..." required rows={4}></textarea>
+                </div>
+                <button type="submit" disabled={contactMutation.isPending} className="w-full py-4 rounded-xl bg-[var(--color-civic-emerald-deep)] hover:bg-[var(--color-civic-emerald)] text-white font-semibold transition-all duration-150 flex items-center justify-center gap-2 shadow-lg active:scale-[0.99] disabled:opacity-50">
+                  <Send className="w-5 h-5" />
+                  <span>Send Message</span>
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </section>
@@ -704,32 +491,30 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════════
           CTA BANNER
       ════════════════════════════════════════════════ */}
-      <section className="py-20 gradient-hero relative overflow-hidden">
-        <div className="absolute inset-0 opacity-15 bg-cover bg-center"
-          style={{ backgroundImage: `url('${HERO_IMAGES[(slide + 1) % HERO_IMAGES.length].src}')` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-green-950/70 to-green-800/50" />
-        <div className="relative max-w-4xl mx-auto px-4 text-center">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-6">
-              Ready to Make a <span className="text-amber-400">Difference?</span>
-            </h2>
-            <p className="text-xl text-white/80 mb-10">
-              Join thousands of donors already transforming lives in Adama City.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link to="/donate">
-                <Button size="lg" variant="secondary" rightIcon={<ArrowRight className="w-5 h-5" />}>
-                  {t('hero.cta_donate')}
-                </Button>
-              </Link>
-              <Link to="/register">
-                <Button size="lg" variant="outline"
-                  className="border-white/60 text-white hover:bg-white/10 hover:text-white hover:border-white">
-                  {t('nav.register')}
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
+      <section className="py-20 lg:py-28 relative overflow-hidden bg-gradient-to-b from-[var(--color-surface)] to-[var(--color-surface-container-low)] border-b border-[var(--border)]">
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none flex items-center justify-center">
+          <span className="text-[120px] lg:text-[220px] font-black tracking-widest text-[var(--color-civic-emerald)] select-none">ADAMA</span>
+        </div>
+        <div className="relative max-w-4xl mx-auto px-6 text-center space-y-6">
+          <h2 className="text-4xl lg:text-6xl font-bold text-[var(--text-main)] leading-tight">
+            Ready to Make a <span className="text-[var(--color-amber-cta)]">Difference?</span>
+          </h2>
+          <p className="text-lg text-[var(--text-muted)] max-w-xl mx-auto">
+            Join thousands of donors already transforming lives in Adama City.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <Link to="/donate">
+              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[var(--color-amber-cta)] hover:bg-[var(--color-amber-hover)] text-[#0b131b] font-semibold transition-all duration-150 shadow-xl active:scale-95">
+                <span>Donate Now</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </Link>
+            <Link to="/register">
+              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-[var(--border)] hover:border-[var(--color-civic-emerald)] text-[var(--text-main)] hover:text-[var(--color-civic-emerald)] bg-[var(--color-surface-container)] font-semibold transition-all duration-150 active:scale-95">
+                <span>Register</span>
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>

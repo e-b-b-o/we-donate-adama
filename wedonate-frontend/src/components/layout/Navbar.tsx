@@ -81,13 +81,13 @@ export default function Navbar() {
 
   /* background when scrolled differs between light/dark */
   const navBg = scrolled
-    ? (isDark ? 'bg-slate-900/95 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-white shadow-lg')
+    ? 'bg-[var(--color-surface-container-low)]/95 backdrop-blur-md shadow-lg shadow-black/20 border-b border-[var(--border)]'
     : 'bg-transparent';
 
   /* text colour on transparent nav (hero bg is always dark-green) */
   const onHero  = !scrolled;
-  const txtBase = onHero ? 'text-white'      : (isDark ? 'text-slate-100'  : 'text-gray-700');
-  const hoverBg = onHero ? 'hover:bg-white/10' : (isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100');
+  const txtBase = onHero ? 'text-white'      : 'text-[var(--text-main)]';
+  const hoverBg = onHero ? 'hover:bg-white/10' : 'hover:bg-[var(--color-surface-container-mid)]';
 
   return (
     <nav className={cn('fixed top-0 left-0 right-0 z-50 transition-all duration-300', navBg)}>
@@ -96,31 +96,30 @@ export default function Navbar() {
 
           {/* ── Logo ──────────────────────────────────── */}
           <Link to="/" className="flex items-center gap-3 group shrink-0">
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md group-hover:scale-105 transition-transform border-2 border-white/30">
+            <div className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-highest)] border border-[var(--color-civic-emerald)]/30 flex items-center justify-center p-1.5 shadow-inner transition-transform duration-150 group-hover:scale-105">
               <img
-                src="/adama_logo.png"
+                src="/adama_logo.webp"
                 alt="Adama City Logo"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-lg"
                 onError={(e) => {
-                  /* fallback to text if image missing */
                   (e.currentTarget as HTMLImageElement).style.display = 'none';
                 }}
               />
             </div>
-            <div>
-              <span className={cn('font-extrabold text-xl tracking-tight transition-colors',
-                onHero ? 'text-white' : (isDark ? 'text-green-400' : 'text-green-800'))}>
-                We<span className="text-amber-400">Donate</span>
+            <div className="flex flex-col">
+              <span className={cn('font-bold text-lg tracking-tight leading-tight flex items-center gap-1.5 transition-colors',
+                onHero ? 'text-white' : 'text-[var(--text-main)]')}>
+                WE DONATE <span className="text-[var(--color-amber-cta)] text-[10px]">●</span> <span className="font-normal text-sm opacity-80">Adama City</span>
               </span>
-              <p className={cn('text-xs font-medium leading-none transition-colors',
-                onHero ? 'text-green-100' : (isDark ? 'text-slate-400' : 'text-gray-500'))}>
-                Adama City
-              </p>
+              <span className={cn('text-[10px] uppercase tracking-widest font-semibold transition-colors',
+                onHero ? 'text-white/70' : 'text-[var(--text-muted)]')}>
+                Official Municipal Portal
+              </span>
             </div>
           </Link>
 
           {/* ── Desktop Nav Links ─────────────────────── */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-8 mr-6">
             {[
               { to: '/',       label: t('nav.home') },
               { to: '/about',  label: t('nav.about') },
@@ -130,10 +129,10 @@ export default function Navbar() {
               return (
                 <Link key={link.to} to={link.to}
                   className={cn(
-                    'px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200',
+                    'text-sm transition-colors duration-200 border-b-2 pb-1 hover:text-[var(--color-civic-emerald)] hover:border-[var(--color-civic-emerald)]',
                     active
-                      ? (onHero ? 'bg-white/20 text-white' : (isDark ? 'bg-green-800 text-green-200' : 'bg-green-700 text-white'))
-                      : cn(txtBase, hoverBg),
+                      ? (onHero ? 'text-white border-white font-bold' : 'text-[var(--color-civic-emerald)] border-[var(--color-civic-emerald)] font-bold')
+                      : cn(txtBase, 'border-transparent font-medium')
                   )}>
                   {link.label}
                 </Link>
@@ -142,35 +141,41 @@ export default function Navbar() {
           </div>
 
           {/* ── Right Controls ────────────────────────── */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-3">
 
             {/* Dark/Light toggle */}
             <button
               onClick={toggleTheme}
               aria-label="Toggle dark mode"
               className={cn(
-                'p-2.5 rounded-xl transition-all',
-                txtBase, hoverBg,
+                'w-10 h-10 rounded-xl flex items-center justify-center transition-colors border',
+                onHero 
+                  ? 'bg-white/10 hover:bg-white/20 border-white/20 text-white hover:border-white/40' 
+                  : 'bg-[var(--color-surface-container)] text-[var(--text-muted)] hover:text-[var(--color-civic-emerald)] border-[var(--border)] hover:border-[var(--color-civic-emerald)]'
               )}>
               {isDark
-                ? <Sun  className="w-4.5 h-4.5 text-amber-400" />
-                : <Moon className="w-4.5 h-4.5" />}
+                ? <Sun  className="w-5 h-5 text-amber-400" />
+                : <Moon className="w-5 h-5" />}
             </button>
 
             {/* Language selector */}
             <div className="relative" ref={langRef}>
               <button
                 onClick={() => { setLangOpen(!langOpen); setUserOpen(false); }}
-                className={cn('flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all', txtBase, hoverBg)}>
-                <Globe className="w-4 h-4" />
-                <span className="hidden lg:inline">{currentLang.flag} {currentLang.label}</span>
+                className={cn('flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors border', 
+                  onHero 
+                    ? 'bg-white/10 hover:bg-white/20 border-white/20 text-white hover:border-white/40' 
+                    : 'bg-[var(--color-surface-container)] text-[var(--text-muted)] hover:text-[var(--text-main)] border-[var(--border)] hover:border-[var(--border-hover)]'
+                )}>
+                <Globe className={cn("w-4 h-4", !onHero && "text-[var(--color-civic-emerald)]")} />
+                <span className="hidden lg:inline">{currentLang.label}</span>
                 <span className="lg:hidden">{currentLang.flag}</span>
                 <ChevronDown className={cn('w-3 h-3 transition-transform', langOpen && 'rotate-180')} />
               </button>
               {langOpen && (
                 <div className={cn(
                   'absolute right-0 top-full mt-2 rounded-2xl shadow-2xl border py-2 min-w-[170px] z-50',
-                  isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100',
+                  'bg-[var(--bg-card)] border-[var(--border)]'
                 )}>
                   {LANGUAGES.map(lang => (
                     <button key={lang.code}
@@ -178,8 +183,8 @@ export default function Navbar() {
                       className={cn(
                         'w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 transition-colors',
                         i18n.language === lang.code
-                          ? 'text-green-600 font-semibold bg-green-50 dark:bg-green-900/30'
-                          : (isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-green-50'),
+                          ? 'text-[var(--color-civic-emerald)] font-semibold bg-[var(--color-civic-emerald-glow)]'
+                          : 'text-[var(--text-main)] hover:bg-[var(--color-surface-container-mid)]',
                       )}>
                       <span>{lang.flag}</span> {lang.label}
                     </button>
@@ -196,7 +201,7 @@ export default function Navbar() {
                   className={cn('relative p-2.5 rounded-xl transition-all', txtBase, hoverBg)}>
                   <Bell className="w-4.5 h-4.5" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">
+                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-[var(--color-accent)] text-white text-[10px] font-bold rounded-full px-1">
                       {unreadCount > 99 ? '99+' : unreadCount}
                     </span>
                   )}
@@ -208,12 +213,12 @@ export default function Navbar() {
                     'flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all',
                     onHero
                       ? 'bg-white/15 hover:bg-white/25 text-white'
-                      : (isDark ? 'bg-slate-700 hover:bg-slate-600 text-slate-100' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'),
+                      : 'bg-[var(--color-surface-container-mid)] hover:bg-[var(--color-surface-container-high)] text-[var(--text-main)]',
                   )}>
                   {user?.profileImage ? (
                     <img src={user.profileImage} alt="" className="w-7 h-7 rounded-full object-cover" />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-green-600 flex items-center justify-center text-white text-xs font-bold">
+                    <div className="w-7 h-7 rounded-full bg-[var(--color-civic-emerald-deep)] flex items-center justify-center text-white text-xs font-bold">
                       {user?.firstName?.[0]}{user?.lastName?.[0]}
                     </div>
                   )}
@@ -223,23 +228,23 @@ export default function Navbar() {
                 {userOpen && (
                   <div className={cn(
                     'absolute right-0 top-full mt-2 rounded-2xl shadow-2xl border py-1 min-w-[210px] z-50',
-                    isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100',
+                    'bg-[var(--bg-card)] border-[var(--border)]'
                   )}>
-                    <div className={cn('px-4 py-3 border-b', isDark ? 'border-slate-700' : 'border-gray-100')}>
+                    <div className={cn('px-4 py-3 border-b border-[var(--border)]')}>
                       <div className="flex items-center gap-3">
                         {user?.profileImage ? (
                           <img src={user.profileImage} alt="" className="w-10 h-10 rounded-full object-cover" />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white text-sm font-bold">
+                          <div className="w-10 h-10 rounded-full bg-[var(--color-civic-emerald-deep)] flex items-center justify-center text-white text-sm font-bold">
                             {user?.firstName?.[0]}{user?.lastName?.[0]}
                           </div>
                         )}
                         <div>
-                          <p className={cn('text-sm font-semibold', isDark ? 'text-white' : 'text-gray-800')}>
+                          <p className={cn('text-sm font-semibold text-[var(--text-main)]')}>
                             {user?.firstName} {user?.lastName}
                           </p>
-                          <p className={cn('text-xs', isDark ? 'text-slate-400' : 'text-gray-500')}>{user?.email}</p>
-                          <span className="inline-block mt-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">
+                          <p className={cn('text-xs text-[var(--text-muted)]')}>{user?.email}</p>
+                          <span className="inline-block mt-1 text-xs bg-[var(--color-civic-emerald-glow)] text-[var(--color-civic-emerald)] border border-[rgba(16,185,129,0.3)] px-2 py-0.5 rounded-full font-medium">
                             {user?.role?.replace(/_/g,' ')}
                           </span>
                         </div>
@@ -250,13 +255,13 @@ export default function Navbar() {
                     ].map(({ to, icon: Icon, label }) => (
                       <Link key={to} to={to} onClick={() => setUserOpen(false)}
                         className={cn('flex items-center gap-2 px-4 py-2.5 text-sm transition-colors',
-                          isDark ? 'text-slate-200 hover:bg-slate-700 hover:text-green-400' : 'text-gray-700 hover:bg-green-50 hover:text-green-700')}>
+                          'text-[var(--text-main)] hover:bg-[var(--color-surface-container-mid)] hover:text-[var(--color-civic-emerald)]')}>
                         <Icon className="w-4 h-4" /> {label}
                       </Link>
                     ))}
                     <button onClick={handleLogout}
                       className={cn('w-full flex items-center gap-2 px-4 py-2.5 text-sm transition-colors text-red-500',
-                        isDark ? 'hover:bg-red-900/30' : 'hover:bg-red-50')}>
+                        'hover:bg-red-500/10 hover:text-red-400')}>
                       <LogOut className="w-4 h-4" /> {t('nav.logout')}
                     </button>
                   </div>
@@ -270,7 +275,7 @@ export default function Navbar() {
                   {t('nav.login')}
                 </Link>
                 <Link to="/register"
-                  className="px-4 py-2 rounded-xl text-sm font-semibold bg-amber-500 hover:bg-amber-600 text-white shadow-md transition-all">
+                  className="px-4 py-2 rounded-xl text-sm font-semibold bg-[var(--color-amber-cta)] hover:bg-[var(--color-amber-hover)] text-[#0b131b] shadow-md transition-all">
                   {t('nav.register')}
                 </Link>
               </div>
@@ -279,10 +284,6 @@ export default function Navbar() {
 
           {/* ── Mobile: theme toggle + hamburger ─────── */}
           <div className="md:hidden flex items-center gap-2">
-            <button onClick={toggleTheme} aria-label="Toggle dark mode"
-              className={cn('p-2 rounded-xl transition-all', txtBase, hoverBg)}>
-              {isDark ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
-            </button>
             <button onClick={() => setMobileOpen(!mobileOpen)}
               className={cn('p-2 rounded-xl transition-all', txtBase, hoverBg)}>
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -295,7 +296,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div className={cn(
           'md:hidden border-t shadow-xl',
-          isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-gray-100',
+          'bg-[var(--bg-card)] border-[var(--border)]'
         )}>
           <div className="px-4 py-4 space-y-1">
             {[
@@ -305,37 +306,37 @@ export default function Navbar() {
             ].map(link => (
               <Link key={link.to} to={link.to}
                 className={cn('block px-4 py-3 rounded-xl text-sm font-medium transition-colors',
-                  isDark ? 'text-slate-200 hover:bg-slate-700 hover:text-green-400' : 'text-gray-700 hover:bg-green-50 hover:text-green-700')}>
+                  'text-[var(--text-main)] hover:bg-[var(--color-surface-container-mid)] hover:text-[var(--color-civic-emerald)]')}>
                 {link.label}
               </Link>
             ))}
 
             {/* Language */}
-            <div className={cn('border-t pt-3 mt-3 space-y-1', isDark ? 'border-slate-700' : 'border-gray-100')}>
-              <p className={cn('text-xs font-semibold px-4 mb-1', isDark ? 'text-slate-500' : 'text-gray-400')}>LANGUAGE</p>
+            <div className={cn('border-t pt-3 mt-3 space-y-1', 'border-[var(--border)]')}>
+              <p className={cn('text-xs font-semibold px-4 mb-1 text-[var(--text-muted)]')}>LANGUAGE</p>
               {LANGUAGES.map(lang => (
                 <button key={lang.code}
                   onClick={() => { i18n.changeLanguage(lang.code); setMobileOpen(false); }}
                   className={cn('w-full text-left px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-colors',
                     i18n.language === lang.code
-                      ? 'bg-green-50 text-green-700 font-semibold dark:bg-green-900/30 dark:text-green-400'
-                      : (isDark ? 'text-slate-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-50'))}>
+                      ? 'bg-[var(--color-civic-emerald-glow)] text-[var(--color-civic-emerald)] font-semibold'
+                      : 'text-[var(--text-main)] hover:bg-[var(--color-surface-container-mid)]')}>
                   {lang.flag} {lang.label}
                 </button>
               ))}
             </div>
 
             {/* Auth */}
-            <div className={cn('border-t pt-3 mt-3 space-y-2', isDark ? 'border-slate-700' : 'border-gray-100')}>
+            <div className={cn('border-t pt-3 mt-3 space-y-2 border-[var(--border)]')}>
               {isAuthenticated ? (
                 <>
                   <Link to="/dashboard"
                     className={cn('block px-4 py-3 rounded-xl text-sm font-medium transition-colors',
-                      isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-green-50')}>
+                      'text-[var(--text-main)] hover:bg-[var(--color-surface-container-mid)]')}>
                     {t('nav.dashboard')}
                   </Link>
                   <button onClick={handleLogout}
-                    className="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30">
+                    className="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-500/10">
                     {t('nav.logout')}
                   </button>
                 </>
@@ -343,11 +344,11 @@ export default function Navbar() {
                 <>
                   <Link to="/login"
                     className={cn('block px-4 py-3 rounded-xl text-sm font-medium',
-                      isDark ? 'text-green-400 hover:bg-slate-700' : 'text-green-700 hover:bg-green-50')}>
+                      'text-[var(--color-civic-emerald)] hover:bg-[var(--color-surface-container-mid)]')}>
                     {t('nav.login')}
                   </Link>
                   <Link to="/register"
-                    className="block px-4 py-3 rounded-xl text-sm font-semibold bg-amber-500 text-white text-center">
+                    className="block px-4 py-3 rounded-xl text-sm font-semibold bg-[var(--color-amber-cta)] text-[#0b131b] text-center">
                     {t('nav.register')}
                   </Link>
                 </>

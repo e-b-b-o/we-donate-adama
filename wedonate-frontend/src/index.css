@@ -1,63 +1,105 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Serif+Ethiopic:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Noto Serif Ethiopic", sans-serif;
+  
+  /* Civic Solidarism Colors */
+  --color-canvas: #0b131b;
+  --color-surface: #0f1c24;
+  --color-surface-container-low: #15242f;
+  --color-surface-container-mid: #1c2e3d;
+  --color-surface-container-high: #263c4e;
+  
+  --color-civic-emerald: #10b981;
+  --color-civic-emerald-deep: #059669;
+  --color-civic-emerald-base: #047857;
+  --color-civic-emerald-glow: rgba(16, 185, 129, 0.14);
+  
+  --color-amber-cta: #f59e0b;
+  --color-amber-hover: #d97706;
+  --color-amber-muted: rgba(245, 158, 11, 0.14);
+  
+  --color-text-ivory: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+
+  --color-border-subtle: rgba(148, 163, 184, 0.12);
+  --color-border-strong: rgba(148, 163, 184, 0.22);
+}
 
 /* ── Dark mode via .dark class on <html> ─────────────────────── */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   :root {
-    --color-primary: #1a6b3c;
-    --color-primary-dark: #124d2b;
-    --color-secondary: #f5a623;
-    --color-accent: #e63946;
+    /* Map legacy variables to our new ones to prevent breaking existing classes before they're refactored */
+    --color-primary: var(--color-civic-emerald);
+    --color-primary-dark: var(--color-civic-emerald-deep);
+    --color-secondary: var(--color-amber-cta);
+    --color-accent: #ef4444; /* Keep a standard red for errors */
 
-    /* Light mode CSS vars */
-    --bg-page:    #f9fafb;
+    /* Light mode CSS vars - we will default to dark mode for the civic theme, but we keep these mapped */
+    --bg-page:    #f8fafc;
     --bg-card:    #ffffff;
-    --bg-muted:   #f3f4f6;
-    --text-main:  #111827;
-    --text-muted: #6b7280;
-    --border:     #e5e7eb;
+    --bg-muted:   #f1f5f9;
+    --text-main:  #0f1c24;
+    --text-muted: #64748b;
+    --border:     #e2e8f0;
   }
 
   html.dark {
-    --bg-page:    #0f172a;
-    --bg-card:    #1e293b;
-    --bg-muted:   #334155;
-    --text-main:  #f1f5f9;
-    --text-muted: #94a3b8;
-    --border:     #334155;
+    /* Civic Solidarism Theme is intrinsically dark */
+    --bg-page:    var(--color-canvas);
+    --bg-card:    var(--color-surface-container-low);
+    --bg-muted:   var(--color-surface-container-mid);
+    --text-main:  var(--color-text-ivory);
+    --text-muted: var(--color-text-muted);
+    --border:     var(--color-border-subtle);
   }
 
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'Inter', 'Noto Serif Ethiopic', sans-serif;
+    font-family: var(--font-sans);
     background-color: var(--bg-page);
     color: var(--text-main);
     @apply antialiased transition-colors duration-300;
   }
 
-  /* Dark mode page backgrounds */
-  html.dark body { background-color: var(--bg-page); }
+  /* Force dark mode styling onto body when dark class is applied */
+  html.dark body { 
+    background-color: var(--color-canvas); 
+    color: var(--color-text-ivory);
+  }
 }
 
 @layer utilities {
-  /* ── Gradients ── */
-  .gradient-hero {
-    background: linear-gradient(135deg, #1a6b3c 0%, #2d9d5c 50%, #1a6b3c 100%);
+  /* ── Civic Components ── */
+  .btn-primary {
+    @apply bg-[var(--color-amber-cta)] text-[#0b131b] font-semibold rounded-xl px-6 py-3 transition-all hover:bg-[var(--color-amber-hover)] hover:-translate-y-[1px];
+  }
+  
+  .btn-secondary {
+    @apply bg-transparent border-[1.5px] border-[var(--color-civic-emerald-deep)] text-[var(--color-text-ivory)] font-semibold rounded-xl px-6 py-3 transition-all hover:bg-[var(--color-civic-emerald-base)];
   }
 
-  /* ── Glass ── */
-  .glass {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  .civic-card {
+    @apply bg-[var(--color-surface-container-low)] border border-[var(--color-border-subtle)] rounded-2xl p-6 transition-all;
   }
-  html.dark .glass {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.12);
+
+  .civic-input {
+    @apply w-full bg-[var(--color-surface-container-mid)] border-[1.5px] border-[var(--color-border-strong)] rounded-[10px] text-[var(--color-text-ivory)] px-4 py-3 placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-civic-emerald)] focus:ring-[3px] focus:ring-[rgba(16,185,129,0.2)] transition-all;
+  }
+  
+  .civic-badge {
+    @apply rounded-full bg-[var(--color-civic-emerald-glow)] border border-[rgba(16,185,129,0.3)] text-[var(--color-civic-emerald)] px-3 py-1 text-xs font-semibold flex items-center gap-1.5;
+  }
+
+  .glass {
+    background: rgba(11, 19, 27, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(148, 163, 184, 0.12);
   }
 
   /* ── Card dark helpers ── */
