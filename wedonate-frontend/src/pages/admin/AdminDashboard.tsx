@@ -112,23 +112,28 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       {/* Hero Welcome */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
-        className="gradient-hero rounded-3xl p-7 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-cover bg-center" style={{ backgroundImage: "url('/Adama-City.jpg')" }} />
-        <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
-        <div className="relative">
-          <div className="flex items-center gap-4 mb-1">
+        className={cn("rounded-3xl p-7 relative overflow-hidden border",
+          isDark ? "bg-[var(--color-surface-container)] border-[var(--border)]" : "bg-white border-gray-200 shadow-sm"
+        )}>
+        <div className="absolute inset-0 opacity-5 mix-blend-luminosity bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/Adama-City.webp')" }} />
+        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-5">
             {user?.profileImage ? (
-              <img src={user.profileImage} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-white/30" />
+              <img src={user.profileImage} alt="" className="w-16 h-16 rounded-2xl object-cover border shadow-sm" />
             ) : (
-              <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-white text-xl font-bold border-2 border-white/30">
+              <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold border shadow-sm",
+                isDark ? "bg-[var(--color-surface-container-high)] border-[var(--border)] text-white" : "bg-gray-50 border-gray-100 text-gray-800"
+              )}>
                 {user?.firstName?.[0]}{user?.lastName?.[0]}
               </div>
             )}
             <div>
-              <p className="text-white/70 text-sm mb-1">Welcome back,</p>
-              <h1 className="text-2xl font-extrabold mb-1">{user?.firstName} {user?.lastName}</h1>
-              <p className="text-white/60 text-sm capitalize flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5" />
+              <p className={cn("text-sm font-semibold mb-1", isDark ? "text-[var(--text-muted)]" : "text-gray-500")}>Welcome back,</p>
+              <h1 className={cn("text-2xl md:text-3xl font-extrabold tracking-tight mb-1", isDark ? "text-white" : "text-gray-900")}>
+                {user?.firstName} {user?.lastName}
+              </h1>
+              <p className={cn("text-sm font-medium capitalize flex items-center gap-1.5", isDark ? "text-[var(--color-civic-emerald)]" : "text-[var(--color-civic-emerald-deep)]")}>
+                <ShieldCheck className="w-4 h-4" />
                 {user?.role?.toLowerCase().replace(/_/g, ' ')}
               </p>
             </div>
@@ -164,27 +169,28 @@ export default function AdminDashboard() {
             <motion.div key={card.title} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}>
               <Link to={card.link}>
-                <Card hover className="relative overflow-hidden h-full">
-                  <div className={cn('absolute top-0 left-0 w-full h-1 bg-gradient-to-r', card.color)} />
-                  <div className="pt-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className={cn('w-11 h-11 rounded-xl flex items-center justify-center bg-gradient-to-br text-white', card.color)}>
-                        <card.icon className="w-5 h-5" />
-                      </div>
-                      {card.badge !== undefined && card.badge > 0 && (
-                        <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full',
-                          card.urgent
-                            ? 'bg-red-100 text-red-700 animate-pulse'
-                            : isDark ? 'bg-slate-700 text-slate-300' : 'bg-gray-100 text-gray-600')}>
-                          {card.badge} {card.badgeLabel}
-                        </span>
-                      )}
+                <Card hover className={cn("relative overflow-hidden h-full p-5 flex flex-col transition-colors border",
+                  isDark ? "bg-[var(--color-surface-container)] border-[var(--border)] hover:border-[var(--color-civic-emerald)]/50" : "bg-white border-gray-200 hover:border-[var(--color-civic-emerald)]/30"
+                )}>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center border', 
+                      isDark ? 'bg-[var(--color-surface-container-high)] border-[var(--border)] text-[var(--color-civic-emerald)]' : 'bg-green-50 border-green-100 text-[var(--color-civic-emerald-deep)]'
+                    )}>
+                      <card.icon className="w-5 h-5" />
                     </div>
-                    <h3 className={cn('text-sm font-bold mb-1', isDark ? 'text-white' : 'text-gray-900')}>{card.title}</h3>
-                    <p className={cn('text-xs leading-relaxed', isDark ? 'text-slate-400' : 'text-gray-500')}>{card.description}</p>
-                    <div className="flex items-center gap-1 mt-3 text-xs font-semibold text-green-500">
-                      Manage <ArrowRight className="w-3 h-3" />
-                    </div>
+                    {card.badge !== undefined && card.badge > 0 && (
+                      <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full',
+                        card.urgent
+                          ? (isDark ? 'bg-red-900/40 text-red-400' : 'bg-red-100 text-red-700')
+                          : (isDark ? 'bg-[var(--color-surface-container-high)] text-[var(--text-muted)]' : 'bg-gray-100 text-gray-600'))}>
+                        {card.badge} {card.badgeLabel}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className={cn('text-sm font-bold mb-1.5', isDark ? 'text-white' : 'text-gray-900')}>{card.title}</h3>
+                  <p className={cn('text-xs leading-relaxed flex-1', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>{card.description}</p>
+                  <div className={cn("flex items-center gap-1 mt-4 text-xs font-bold", isDark ? "text-[var(--color-civic-emerald)]" : "text-[var(--color-civic-emerald-deep)]")}>
+                    Manage <ArrowRight className="w-3 h-3" />
                   </div>
                 </Card>
               </Link>
@@ -195,29 +201,34 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       {isLoading ? (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
-          {[...Array(9)].map((_, i) => (
-            <div key={i} className={cn('h-28 rounded-2xl animate-pulse', isDark ? 'bg-slate-700' : 'bg-gray-100')} />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className={cn('h-28 rounded-2xl animate-pulse border', isDark ? 'bg-[var(--color-surface-container)] border-[var(--border)]' : 'bg-gray-50 border-gray-100')} />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           {statCards.map((s, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06 }}>
               <Link to={s.link}>
-                <Card hover className="p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center',
-                      isDark ? `${s.bg}/20` : s.bg)}>
-                      <s.icon className={cn('w-5 h-5', s.color)} />
+                <Card hover className={cn("p-5 flex flex-col justify-between h-full transition-colors border",
+                  isDark ? "bg-[var(--color-surface-container)] border-[var(--border)] hover:border-[var(--color-civic-emerald)]/50" : "bg-white border-gray-200 hover:border-[var(--color-civic-emerald)]/30"
+                )}>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center border',
+                      isDark ? 'bg-[var(--color-surface-container-high)] border-[var(--border)]' : 'bg-gray-50 border-gray-100'
+                    )}>
+                      <s.icon className={cn('w-4 h-4', s.color)} />
                     </div>
                     {Number(s.value) > 0 && (s.label.includes('Pending') || s.label.includes('Verif')) && (
-                      <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
+                      <span className="w-2 h-2 bg-amber-500 rounded-full" />
                     )}
                   </div>
-                  <p className={cn('text-2xl font-extrabold', isDark ? 'text-white' : 'text-gray-900')}>{s.value}</p>
-                  <p className={cn('text-xs mt-1', isDark ? 'text-slate-400' : 'text-gray-500')}>{s.label}</p>
+                  <div>
+                    <p className={cn('text-2xl font-extrabold', isDark ? 'text-white' : 'text-gray-900')}>{s.value}</p>
+                    <p className={cn('text-[11px] font-semibold uppercase tracking-wider mt-1', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>{s.label}</p>
+                  </div>
                 </Card>
               </Link>
             </motion.div>
@@ -229,20 +240,20 @@ export default function AdminDashboard() {
       {monthlyData.length > 0 && (
         <div>
           <h2 className={cn('text-lg font-bold mb-4', isDark ? 'text-white' : 'text-gray-900')}>Monthly Donations</h2>
-          <Card className="p-6">
+          <Card className={cn("p-6 border", isDark ? "bg-[var(--color-surface-container)] border-[var(--border)]" : "bg-white border-gray-200")}>
             <div className="flex items-end gap-2 h-48">
               {monthlyData.map((m: any, i: number) => (
-                <div key={m.month} className="flex-1 flex flex-col items-center gap-1">
-                  <span className={cn('text-[10px] font-bold', isDark ? 'text-slate-300' : 'text-gray-700')}>
+                <div key={m.month} className="flex-1 flex flex-col items-center gap-1.5">
+                  <span className={cn('text-[10px] font-bold', isDark ? 'text-[var(--text-muted)]' : 'text-gray-600')}>
                     {formatCurrency(m.total)}
                   </span>
                   <motion.div
                     initial={{ height: 0 }}
                     animate={{ height: `${(m.total / maxMonthly) * 140}px` }}
                     transition={{ delay: i * 0.05, duration: 0.4 }}
-                    className="w-full bg-gradient-to-t from-green-600 to-green-400 rounded-t-lg min-h-[4px]"
+                    className={cn("w-full rounded-t-md min-h-[4px]", isDark ? "bg-[var(--color-civic-emerald)]/40" : "bg-[var(--color-civic-emerald)]/20")}
                   />
-                  <span className={cn('text-[10px]', isDark ? 'text-slate-500' : 'text-gray-400')}>
+                  <span className={cn('text-[10px] font-medium uppercase tracking-wider', isDark ? 'text-[var(--text-muted)]/70' : 'text-gray-400')}>
                     {m.month.slice(5)}
                   </span>
                 </div>
@@ -256,27 +267,31 @@ export default function AdminDashboard() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className={cn('text-lg font-bold', isDark ? 'text-white' : 'text-gray-900')}>Live Public Causes</h2>
-          <Link to="/donate" className="text-xs text-green-500 font-semibold hover:bg-green-500/20 transition-colors flex items-center gap-1 bg-green-500/10 px-3 py-1.5 rounded-lg">
+          <Link to="/donate" className={cn("text-xs font-bold hover:underline flex items-center gap-1", isDark ? "text-[var(--color-civic-emerald)]" : "text-[var(--color-civic-emerald-deep)]")}>
             Browse Live Causes <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <Card hover className="p-5 flex items-center gap-4">
-            <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', isDark ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-50 text-indigo-600')}>
-              <BarChart3 className="w-6 h-6" />
+          <Card hover className={cn("p-5 flex items-center gap-4 transition-colors border",
+            isDark ? "bg-[var(--color-surface-container)] border-[var(--border)] hover:border-indigo-500/50" : "bg-white border-gray-200 hover:border-indigo-300"
+          )}>
+            <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center border', isDark ? 'bg-indigo-900/20 border-indigo-500/30 text-indigo-400' : 'bg-indigo-50 border-indigo-100 text-indigo-600')}>
+              <BarChart3 className="w-5 h-5" />
             </div>
             <div>
               <p className={cn('text-2xl font-extrabold', isDark ? 'text-white' : 'text-gray-900')}>{stats?.activeCampaigns || 0}</p>
-              <p className={cn('text-sm font-medium', isDark ? 'text-slate-400' : 'text-gray-500')}>Live Campaigns</p>
+              <p className={cn('text-[11px] font-semibold uppercase tracking-wider mt-1', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>Live Campaigns</p>
             </div>
           </Card>
-          <Card hover className="p-5 flex items-center gap-4">
-            <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', isDark ? 'bg-amber-500/20 text-amber-400' : 'bg-amber-50 text-amber-600')}>
-              <Heart className="w-6 h-6" />
+          <Card hover className={cn("p-5 flex items-center gap-4 transition-colors border",
+            isDark ? "bg-[var(--color-surface-container)] border-[var(--border)] hover:border-amber-500/50" : "bg-white border-gray-200 hover:border-amber-300"
+          )}>
+            <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center border', isDark ? 'bg-amber-900/20 border-amber-500/30 text-amber-400' : 'bg-amber-50 border-amber-100 text-amber-600')}>
+              <Heart className="w-5 h-5" />
             </div>
             <div>
               <p className={cn('text-2xl font-extrabold', isDark ? 'text-white' : 'text-gray-900')}>{stats?.publishedRequests || 0}</p>
-              <p className={cn('text-sm font-medium', isDark ? 'text-slate-400' : 'text-gray-500')}>Live Direct Support</p>
+              <p className={cn('text-[11px] font-semibold uppercase tracking-wider mt-1', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>Live Direct Support</p>
             </div>
           </Card>
         </div>
@@ -287,73 +302,73 @@ export default function AdminDashboard() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className={cn('text-lg font-bold', isDark ? 'text-white' : 'text-gray-900')}>{t('admin.recent_donations')}</h2>
-            <Link to="/admin/donations" className="text-xs text-green-500 font-semibold hover:underline flex items-center gap-1">
+            <Link to="/admin/donations" className={cn("text-xs font-bold hover:underline flex items-center gap-1", isDark ? "text-[var(--color-civic-emerald)]" : "text-[var(--color-civic-emerald-deep)]")}>
               View All <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
-          <Card padding="none" className="overflow-hidden">
+          <div className={cn("rounded-2xl border overflow-hidden", isDark ? "bg-[var(--color-surface-container)] border-[var(--border)]" : "bg-white border-gray-200")}>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className={cn('border-b', isDark ? 'bg-slate-700/50 border-slate-700' : 'bg-gray-50 border-gray-100')}>
+              <table className="w-full text-sm text-left">
+                <thead className={cn('border-b', isDark ? 'bg-[var(--color-surface-container-high)] border-[var(--border)] text-[var(--text-muted)]' : 'bg-gray-50 border-gray-100 text-gray-500')}>
                   <tr>
-                    <th className={th}>{t('admin.donor')}</th>
-                    <th className={th}>{t('admin.amount')}</th>
-                    <th className={th}>{t('admin.status')}</th>
+                    <th className="px-5 py-3 font-semibold text-xs uppercase tracking-wider">{t('admin.donor')}</th>
+                    <th className="px-5 py-3 font-semibold text-xs uppercase tracking-wider">{t('admin.amount')}</th>
+                    <th className="px-5 py-3 font-semibold text-xs uppercase tracking-wider">{t('admin.status')}</th>
                   </tr>
                 </thead>
-                <tbody className={cn('divide-y', isDark ? 'divide-slate-700' : 'divide-gray-50')}>
+                <tbody className={cn('divide-y', isDark ? 'divide-[var(--border)]' : 'divide-gray-100')}>
                   {stats?.recentDonations?.map((d: any) => (
-                    <tr key={d.id} className={cn('transition-colors', isDark ? 'hover:bg-slate-700/40' : 'hover:bg-gray-50')}>
-                      <td className={cn(td, 'font-medium')}>
-                        {d.isAnonymous ? <span className="italic opacity-50">{t('admin.anonymous')}</span> : `${d.donor?.firstName} ${d.donor?.lastName}`}
+                    <tr key={d.id} className={cn('transition-colors', isDark ? 'hover:bg-[var(--color-surface-container-high)]' : 'hover:bg-gray-50')}>
+                      <td className={cn('px-5 py-3.5', isDark ? 'text-white' : 'text-gray-900')}>
+                        {d.isAnonymous ? <span className="italic opacity-50 text-xs">{t('admin.anonymous')}</span> : <span className="font-semibold text-sm">{d.donor?.firstName} {d.donor?.lastName}</span>}
                       </td>
-                      <td className={cn(td, 'font-bold text-green-500')}>{d.amount ? formatCurrency(d.amount) : '—'}</td>
-                      <td className={td}><Badge variant={statusVariant(d.paymentStatus)}>{d.paymentStatus}</Badge></td>
+                      <td className="px-5 py-3.5 font-bold text-green-500">{d.amount ? formatCurrency(d.amount) : '—'}</td>
+                      <td className="px-5 py-3.5"><Badge variant={statusVariant(d.paymentStatus)}>{d.paymentStatus}</Badge></td>
                     </tr>
                   )) ?? (
-                    <tr><td colSpan={3} className={cn('text-center py-10', isDark ? 'text-slate-500' : 'text-gray-400')}>{t('admin.no_data')}</td></tr>
+                    <tr><td colSpan={3} className={cn('text-center py-10', isDark ? 'text-[var(--text-muted)]' : 'text-gray-400')}>{t('admin.no_data')}</td></tr>
                   )}
                 </tbody>
               </table>
             </div>
-          </Card>
+          </div>
         </div>
 
         {/* Recent Activity */}
         <div>
           <h2 className={cn('text-lg font-bold mb-4', isDark ? 'text-white' : 'text-gray-900')}>Recent Activity</h2>
-          <Card padding="none" className="overflow-hidden">
-            <div className="divide-y divide-gray-100 dark:divide-slate-700">
+          <div className={cn("rounded-2xl border overflow-hidden", isDark ? "bg-[var(--color-surface-container)] border-[var(--border)]" : "bg-white border-gray-200")}>
+            <div className={cn("divide-y", isDark ? "divide-[var(--border)]" : "divide-gray-100")}>
               {stats?.recentActivity?.map((log: any) => (
-                <div key={log.id} className={cn('flex items-center gap-3 px-5 py-3', isDark ? 'hover:bg-slate-700/40' : 'hover:bg-gray-50')}>
+                <div key={log.id} className={cn('flex items-start gap-3 p-4 transition-colors', isDark ? 'hover:bg-[var(--color-surface-container-high)]' : 'hover:bg-gray-50')}>
                   {log.user?.profileImage ? (
-                    <img src={log.user.profileImage} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
+                    <img src={log.user.profileImage} alt="" className="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-200" />
                   ) : (
-                    <div className={cn('w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0',
-                      isDark ? 'bg-green-900/40 text-green-400' : 'bg-green-100 text-green-700')}>
+                    <div className={cn('w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 border',
+                      isDark ? 'bg-[var(--color-surface-container-high)] border-[var(--border)] text-white' : 'bg-gray-100 border-gray-200 text-gray-700')}>
                       {log.user?.firstName?.[0]}{log.user?.lastName?.[0]}
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className={cn('text-xs', isDark ? 'text-slate-300' : 'text-gray-700')}>
+                    <p className={cn('text-sm', isDark ? 'text-white' : 'text-gray-900')}>
                       <span className="font-semibold">{log.user?.firstName} {log.user?.lastName}</span>
                       {' '}
-                      <span className={cn('inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold',
-                        ACTION_COLORS[log.action] || (isDark ? 'text-slate-400 bg-slate-700' : 'text-gray-600 bg-gray-100'))}>
+                      <span className={cn('inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold ml-1',
+                        ACTION_COLORS[log.action] || (isDark ? 'text-[var(--text-muted)] bg-[var(--color-surface-container-high)]' : 'text-gray-600 bg-gray-100'))}>
                         {log.action}
                       </span>
                     </p>
                     {log.details && (
-                      <p className={cn('text-[10px] truncate', isDark ? 'text-slate-500' : 'text-gray-400')}>{log.details}</p>
+                      <p className={cn('text-[11px] truncate mt-1', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>{log.details}</p>
                     )}
                   </div>
-                  <span className={cn('text-[10px] shrink-0', isDark ? 'text-slate-600' : 'text-gray-400')}>{timeAgo(log.createdAt)}</span>
+                  <span className={cn('text-[10px] shrink-0 font-medium whitespace-nowrap', isDark ? 'text-[var(--text-muted)]/70' : 'text-gray-400')}>{timeAgo(log.createdAt)}</span>
                 </div>
               )) ?? (
-                <div className={cn('text-center py-10', isDark ? 'text-slate-500' : 'text-gray-400')}>No activity yet</div>
+                <div className={cn('text-center py-10 text-sm', isDark ? 'text-[var(--text-muted)]' : 'text-gray-400')}>No activity yet</div>
               )}
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     </div>

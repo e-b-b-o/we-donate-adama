@@ -73,44 +73,55 @@ export default function DashboardHome() {
   return (
     <div className="space-y-8">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
-        className="gradient-hero rounded-3xl p-7 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-cover bg-center" style={{ backgroundImage: "url('/Adama-City.jpg')" }} />
-        <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
-        <div className="relative">
-          <div className="flex items-center gap-4 mb-1">
+        className={cn("rounded-3xl p-7 relative overflow-hidden border",
+          isDark ? "bg-[var(--color-surface-container)] border-[var(--border)]" : "bg-white border-gray-200 shadow-sm"
+        )}>
+        <div className="absolute inset-0 opacity-5 mix-blend-luminosity bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/Adama-City.webp')" }} />
+        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-5">
             {user?.profileImage ? (
-              <img src={user.profileImage} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-white/30" />
+              <img src={user.profileImage} alt="" className="w-16 h-16 rounded-2xl object-cover border shadow-sm" />
             ) : (
-              <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-white text-xl font-bold border-2 border-white/30">
+              <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold border shadow-sm",
+                isDark ? "bg-[var(--color-surface-container-high)] border-[var(--border)] text-white" : "bg-gray-50 border-gray-100 text-gray-800"
+              )}>
                 {user?.firstName?.[0]}{user?.lastName?.[0]}
               </div>
             )}
             <div>
-              <p className="text-white/70 text-sm mb-1">{t('dashboard.welcome')}</p>
-              <h1 className="text-2xl font-extrabold mb-1">{user?.firstName} {user?.lastName} 👋</h1>
-              <p className="text-white/60 text-sm capitalize">{user?.role?.toLowerCase().replace(/_/g,' ')}</p>
+              <p className={cn("text-sm font-semibold mb-1", isDark ? "text-[var(--text-muted)]" : "text-gray-500")}>{t('dashboard.welcome')},</p>
+              <h1 className={cn("text-2xl md:text-3xl font-extrabold tracking-tight mb-1", isDark ? "text-white" : "text-gray-900")}>
+                {user?.firstName} {user?.lastName}
+              </h1>
+              <p className={cn("text-sm font-medium capitalize", isDark ? "text-[var(--color-civic-emerald)]" : "text-[var(--color-civic-emerald-deep)]")}>
+                {user?.role?.toLowerCase().replace(/_/g,' ')}
+              </p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <Link to="/donate">
-              <Button variant="secondary" size="sm" rightIcon={<ArrowRight className="w-4 h-4" />}>
-                {t('dashboard.donate_now')}
-              </Button>
+              <button className={cn("px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-colors",
+                "bg-[var(--color-civic-emerald)] text-white hover:bg-[var(--color-civic-emerald-deep)]"
+              )}>
+                {t('dashboard.donate_now')} <ArrowRight className="w-4 h-4" />
+              </button>
             </Link>
             {!isOrgRole && (
               <Link to="/dashboard/requests">
-                <Button size="sm" className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                  variant="outline" leftIcon={<Plus className="w-4 h-4" />}>
-                  {t('dashboard.post_request')}
-                </Button>
+                <button className={cn("px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-colors border",
+                  isDark ? "bg-[var(--color-surface-container-high)] text-white border-[var(--border)] hover:border-[var(--color-civic-emerald)]/50" : "bg-white text-gray-800 border-gray-200 hover:border-[var(--color-civic-emerald)]/30"
+                )}>
+                  <Plus className="w-4 h-4" /> {t('dashboard.post_request')}
+                </button>
               </Link>
             )}
             {isOrgRole && !isPendingOrg && !isRejectedOrg && (
               <Link to="/donate?tab=create-campaign">
-                <Button size="sm" className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                  variant="outline" leftIcon={<Plus className="w-4 h-4" />}>
-                  Create Campaign
-                </Button>
+                <button className={cn("px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-colors border",
+                  isDark ? "bg-[var(--color-surface-container-high)] text-white border-[var(--border)] hover:border-[var(--color-civic-emerald)]/50" : "bg-white text-gray-800 border-gray-200 hover:border-[var(--color-civic-emerald)]/30"
+                )}>
+                  <Plus className="w-4 h-4" /> Create Campaign
+                </button>
               </Link>
             )}
           </div>
@@ -218,14 +229,17 @@ export default function DashboardHome() {
           <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}>
             <Link to={s.to}>
-              <Card hover className="flex items-center gap-4 p-5">
-                <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center shrink-0', s.bg)}>
+              <Card hover className={cn("flex items-center gap-4 p-5 transition-colors border",
+                isDark ? "bg-[var(--color-surface-container)] border-[var(--border)] hover:border-[var(--color-civic-emerald)]/50" : "bg-white border-gray-200 hover:border-[var(--color-civic-emerald)]/30"
+              )}>
+                <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border', 
+                  isDark ? 'bg-[var(--color-surface-container-high)] border-[var(--border)]' : 'bg-gray-50 border-gray-100')}>
                   <s.icon className={cn('w-6 h-6', s.color)} />
                 </div>
                 <div className="min-w-0">
-                  <p className={cn('text-xs font-medium', isDark ? 'text-slate-400' : 'text-gray-500')}>{s.label}</p>
-                  <p className={cn('text-xl font-extrabold', isDark ? 'text-white' : 'text-gray-900')}>{s.value}</p>
-                  <p className={cn('text-xs', isDark ? 'text-slate-500' : 'text-gray-400')}>{s.sub}</p>
+                  <p className={cn('text-xs font-semibold uppercase tracking-wider', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>{s.label}</p>
+                  <p className={cn('text-2xl font-extrabold mt-0.5', isDark ? 'text-white' : 'text-gray-900')}>{s.value}</p>
+                  <p className={cn('text-xs font-medium mt-1', isDark ? 'text-[var(--text-muted)]' : 'text-gray-400')}>{s.sub}</p>
                 </div>
               </Card>
             </Link>
@@ -237,34 +251,38 @@ export default function DashboardHome() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className={h2}>{t('dashboard.recent_donations')}</h2>
-            <Link to="/dashboard/donations" className="text-xs text-green-500 font-semibold hover:underline flex items-center gap-1">
+            <Link to="/dashboard/donations" className={cn("text-xs font-bold hover:underline flex items-center gap-1", isDark ? "text-[var(--color-civic-emerald)]" : "text-[var(--color-civic-emerald-deep)]")}>
               {t('dashboard.view_all')} <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
-          <div className="space-y-3">
-            {myDonations?.slice(0, 4).map((d: any) => (
-              <Card key={d.id} className="flex items-center gap-3 p-4">
-                <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center shrink-0',
-                  isDark ? 'bg-green-900/40' : 'bg-green-50')}>
-                  <Heart className="w-4 h-4 text-green-500" />
+          <div className={cn("rounded-2xl border overflow-hidden", isDark ? "bg-[var(--color-surface-container)] border-[var(--border)]" : "bg-white border-gray-200")}>
+            <div className={cn("divide-y", isDark ? "divide-[var(--border)]" : "divide-gray-100")}>
+              {myDonations?.slice(0, 4).map((d: any) => (
+                <div key={d.id} className={cn("flex items-center justify-between gap-3 p-4 transition-colors", isDark ? "hover:bg-[var(--color-surface-container-high)]" : "hover:bg-gray-50")}>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border',
+                      isDark ? 'bg-[var(--color-surface-container-high)] border-[var(--border)]' : 'bg-gray-50 border-gray-100')}>
+                      <Heart className="w-4 h-4 text-green-500" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className={cn('text-sm font-semibold truncate', isDark ? 'text-white' : 'text-gray-900')}>
+                        {d.supportRequest?.title || d.campaign?.title || d.donationType}
+                      </p>
+                      <p className={cn('text-xs mt-0.5', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>{formatDate(d.createdAt)}</p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-bold text-green-500 mb-1">{d.amount ? formatCurrency(d.amount) : '—'}</p>
+                    <Badge variant={statusVariant(d.paymentStatus)}>{d.paymentStatus}</Badge>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className={cn('text-sm font-semibold truncate', isDark ? 'text-white' : 'text-gray-800')}>
-                    {d.supportRequest?.title || d.campaign?.title || d.donationType}
-                  </p>
-                  <p className={cn('text-xs', isDark ? 'text-slate-500' : 'text-gray-400')}>{formatDate(d.createdAt)}</p>
+              )) ?? (
+                <div className={cn('text-center py-10 px-4 text-sm', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>
+                  {t('dashboard.no_donations')}
+                  <Link to="/donate" className="block mt-3"><Button size="sm">{t('dashboard.donate_now')}</Button></Link>
                 </div>
-                <div className="text-right shrink-0">
-                  <p className="text-sm font-bold text-green-500">{d.amount ? formatCurrency(d.amount) : '—'}</p>
-                  <Badge variant={statusVariant(d.paymentStatus)}>{d.paymentStatus}</Badge>
-                </div>
-              </Card>
-            )) ?? (
-              <Card className="text-center py-10">
-                <p className={cn('text-sm', isDark ? 'text-slate-500' : 'text-gray-400')}>{t('dashboard.no_donations')}</p>
-                <Link to="/donate"><Button size="sm" className="mt-3">{t('dashboard.donate_now')}</Button></Link>
-              </Card>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
@@ -272,29 +290,35 @@ export default function DashboardHome() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className={h2}>{t('dashboard.my_requests')}</h2>
-              <Link to="/dashboard/requests" className="text-xs text-green-500 font-semibold hover:underline flex items-center gap-1">
+              <Link to="/dashboard/requests" className={cn("text-xs font-bold hover:underline flex items-center gap-1", isDark ? "text-[var(--color-civic-emerald)]" : "text-[var(--color-civic-emerald-deep)]")}>
                 {t('dashboard.view_all')} <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
-            <div className="space-y-3">
-              {myRequests?.slice(0, 4).map((req: any) => (
-                <Card key={req.id} className="flex items-center gap-3 p-4">
-                  <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center shrink-0',
-                    isDark ? 'bg-blue-900/40' : 'bg-blue-50')}>
-                    <FileText className="w-4 h-4 text-blue-500" />
+            <div className={cn("rounded-2xl border overflow-hidden", isDark ? "bg-[var(--color-surface-container)] border-[var(--border)]" : "bg-white border-gray-200")}>
+              <div className={cn("divide-y", isDark ? "divide-[var(--border)]" : "divide-gray-100")}>
+                {myRequests?.slice(0, 4).map((req: any) => (
+                  <div key={req.id} className={cn("flex items-center justify-between gap-3 p-4 transition-colors", isDark ? "hover:bg-[var(--color-surface-container-high)]" : "hover:bg-gray-50")}>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border',
+                        isDark ? 'bg-[var(--color-surface-container-high)] border-[var(--border)]' : 'bg-gray-50 border-gray-100')}>
+                        <FileText className="w-4 h-4 text-blue-500" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className={cn('text-sm font-semibold truncate', isDark ? 'text-white' : 'text-gray-900')}>{req.title}</p>
+                        <p className={cn('text-xs mt-0.5', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>{formatDate(req.createdAt)}</p>
+                      </div>
+                    </div>
+                    <div className="shrink-0">
+                      <Badge variant={statusVariant(req.status)}>{req.status}</Badge>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={cn('text-sm font-semibold truncate', isDark ? 'text-white' : 'text-gray-800')}>{req.title}</p>
-                    <p className={cn('text-xs', isDark ? 'text-slate-500' : 'text-gray-400')}>{formatDate(req.createdAt)}</p>
+                )) ?? (
+                  <div className={cn('text-center py-10 px-4 text-sm', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>
+                    {t('dashboard.no_requests')}
+                    <Link to="/dashboard/requests" className="block mt-3"><Button size="sm">{t('dashboard.post_request')}</Button></Link>
                   </div>
-                  <Badge variant={statusVariant(req.status)}>{req.status}</Badge>
-                </Card>
-              )) ?? (
-                <Card className="text-center py-10">
-                  <p className={cn('text-sm', isDark ? 'text-slate-500' : 'text-gray-400')}>{t('dashboard.no_requests')}</p>
-                  <Link to="/dashboard/requests"><Button size="sm" className="mt-3">{t('dashboard.post_request')}</Button></Link>
-                </Card>
-              )}
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -304,7 +328,7 @@ export default function DashboardHome() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className={h2}>{t('dashboard.my_campaigns')}</h2>
-            <Link to="/dashboard/campaigns" className="text-xs text-green-500 font-semibold hover:underline flex items-center gap-1">
+            <Link to="/dashboard/campaigns" className={cn("text-xs font-bold hover:underline flex items-center gap-1", isDark ? "text-[var(--color-civic-emerald)]" : "text-[var(--color-civic-emerald-deep)]")}>
               {t('dashboard.view_all')} <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
@@ -313,21 +337,21 @@ export default function DashboardHome() {
               {(myCampaigns as any[]).slice(0, 2).map((camp: any) => {
                 const pct = Math.min((camp.raisedAmount / camp.goalAmount) * 100, 100);
                 return (
-                  <Card key={camp.id} className="p-5">
-                    <div className="flex items-start justify-between gap-2 mb-3">
+                  <Card key={camp.id} className={cn("p-5 border transition-colors", isDark ? "bg-[var(--color-surface-container)] border-[var(--border)]" : "bg-white border-gray-200")}>
+                    <div className="flex items-start justify-between gap-2 mb-4">
                       <p className={cn('text-sm font-bold flex-1', isDark ? 'text-white' : 'text-gray-900')}>{camp.title}</p>
                       <Badge variant={statusVariant(camp.status)}>{camp.status}</Badge>
                     </div>
-                    <div className="mb-2">
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className="text-green-500 font-medium">{formatCurrency(camp.raisedAmount)}</span>
-                        <span className={isDark ? 'text-slate-500' : 'text-gray-400'}>{Math.round(pct)}%</span>
+                    <div className="mb-3">
+                      <div className="flex justify-between text-xs mb-1.5 font-medium">
+                        <span className="text-green-500">{formatCurrency(camp.raisedAmount)}</span>
+                        <span className={isDark ? 'text-[var(--text-muted)]' : 'text-gray-500'}>{Math.round(pct)}%</span>
                       </div>
-                      <div className={cn('h-2 rounded-full overflow-hidden', isDark ? 'bg-slate-700' : 'bg-gray-200')}>
+                      <div className={cn('h-1.5 rounded-full overflow-hidden', isDark ? 'bg-[var(--color-surface-container-high)]' : 'bg-gray-200')}>
                         <div className="h-full bg-green-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
                       </div>
                     </div>
-                    <p className={cn('text-xs', isDark ? 'text-slate-500' : 'text-gray-400')}>
+                    <p className={cn('text-xs font-medium', isDark ? 'text-[var(--text-muted)]/70' : 'text-gray-400')}>
                       {t('dashboard.goal')} {formatCurrency(camp.goalAmount)}
                     </p>
                   </Card>
@@ -335,9 +359,9 @@ export default function DashboardHome() {
               })}
             </div>
           ) : (
-            <Card className="text-center py-10">
-              <p className={cn('text-sm', isDark ? 'text-slate-500' : 'text-gray-400')}>No campaigns yet.</p>
-              <Link to="/donate?tab=create-campaign"><Button size="sm" className="mt-3">Create Campaign</Button></Link>
+            <Card className={cn("text-center py-10", isDark ? "bg-[var(--color-surface-container)] border-[var(--border)]" : "bg-white border-gray-200")}>
+              <p className={cn('text-sm', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>No campaigns yet.</p>
+              <Link to="/donate?tab=create-campaign"><Button size="sm" className="mt-4">Create Campaign</Button></Link>
             </Card>
           )}
         </div>
