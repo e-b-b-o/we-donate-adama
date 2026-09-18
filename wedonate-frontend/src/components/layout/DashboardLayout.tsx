@@ -32,16 +32,15 @@ function SidebarContent({ links, user, location, onClose, onLogout, logoutLabel,
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
       {/* Header */}
-      <div className={cn('px-5 py-5 border-b h-20 shrink-0 flex items-center', isDark ? 'border-slate-700' : 'border-gray-100')}>
+      <div className={cn('px-5 py-5 border-b h-20 shrink-0 flex items-center', 'border-[var(--border)]')}>
         <Link to="/" className="flex items-center gap-3 overflow-hidden">
-          <div className="w-9 h-9 rounded-xl overflow-hidden border-2 border-green-200 shadow-sm shrink-0 flex-none">
-            <img src="/adama_logo.png" alt="Logo" className="w-full h-full object-cover" />
+          <div className="w-9 h-9 rounded-xl overflow-hidden shadow-sm shrink-0 flex-none bg-[var(--color-surface-container-mid)]">
+            <img src="/adama_logo.webp" alt="Logo" className="w-full h-full object-cover" />
           </div>
-          <span className={cn('font-extrabold text-lg transition-opacity duration-300 ease-in-out whitespace-nowrap',
-            collapsed ? 'opacity-0' : 'opacity-100',
-            isDark ? 'text-green-400' : 'text-green-800'
+          <span className={cn('font-extrabold text-lg transition-opacity duration-300 ease-in-out whitespace-nowrap text-[var(--text-main)]',
+            collapsed ? 'opacity-0' : 'opacity-100'
           )}>
-            We<span className="text-amber-500">Donate</span>
+            We<span className="text-[var(--color-amber-cta)]">Donate</span>
           </span>
         </Link>
       </div>
@@ -49,23 +48,23 @@ function SidebarContent({ links, user, location, onClose, onLogout, logoutLabel,
       {/* User Profile */}
       {user && (
         <div className={cn('px-5 py-4 border-b h-[73px] shrink-0 flex items-center',
-          isDark ? 'bg-slate-700/50 border-slate-700' : 'bg-gradient-to-r from-green-50 to-emerald-50 border-gray-100'
+          'bg-[var(--color-surface-container-mid)] border-[var(--border)]'
         )}>
           <div className="flex items-center gap-3 overflow-hidden w-full">
             {(user as any)?.profileImage ? (
-              <img src={(user as any).profileImage} alt="" className="w-10 h-10 rounded-full object-cover shrink-0 flex-none" />
+              <img src={(user as any).profileImage} alt="" className="w-10 h-10 rounded-full object-cover shrink-0 flex-none border border-[var(--border)]" />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center text-white font-bold text-sm shrink-0 flex-none">
+              <div className="w-10 h-10 rounded-full bg-[var(--color-civic-emerald-deep)] flex items-center justify-center text-[var(--color-text-ivory)] font-bold text-sm shrink-0 flex-none border border-[var(--border)]">
                 {user.firstName?.[0] ?? '?'}{user.lastName?.[0] ?? ''}
               </div>
             )}
             <div className={cn('transition-opacity duration-300 ease-in-out whitespace-nowrap',
               collapsed ? 'opacity-0' : 'opacity-100'
             )}>
-              <p className={cn('text-sm font-semibold truncate', isDark ? 'text-white' : 'text-gray-800')}>
+              <p className="text-sm font-semibold truncate text-[var(--text-main)]">
                 {user.firstName} {user.lastName}
               </p>
-              <p className="text-xs text-green-500 font-medium capitalize truncate">
+              <p className="text-xs text-[var(--color-civic-emerald)] font-medium capitalize truncate">
                 {user.role?.toLowerCase().replace(/_/g, ' ')}
               </p>
             </div>
@@ -79,9 +78,8 @@ function SidebarContent({ links, user, location, onClose, onLogout, logoutLabel,
           <div key={idx} className="space-y-1">
             {section.title && (
               <div className="h-4 mb-2 px-2 flex items-center">
-                <p className={cn('text-[10px] font-extrabold uppercase tracking-wider whitespace-nowrap transition-opacity duration-300 ease-in-out',
-                  collapsed ? 'opacity-0' : 'opacity-100',
-                  isDark ? 'text-slate-500' : 'text-gray-400'
+                <p className={cn('text-[10px] font-extrabold uppercase tracking-wider whitespace-nowrap transition-opacity duration-300 ease-in-out text-[var(--text-muted)]',
+                  collapsed ? 'opacity-0' : 'opacity-100'
                 )}>
                   {section.title}
                 </p>
@@ -93,12 +91,17 @@ function SidebarContent({ links, user, location, onClose, onLogout, logoutLabel,
                 <Link key={to} to={to} onClick={onClose}
                   title={collapsed ? label : undefined}
                   className={cn(
-                    'flex items-center rounded-xl text-sm font-medium transition-colors px-2 py-2.5 overflow-hidden',
+                    'relative flex items-center rounded-xl text-sm transition-colors px-2 py-2.5 overflow-hidden group',
                     active
-                      ? 'bg-green-700 text-white shadow-md'
-                      : (isDark ? 'text-slate-300 hover:bg-slate-700/50 hover:text-green-400' : 'text-gray-600 hover:bg-green-50 hover:text-green-700'),
+                      ? 'text-[var(--color-civic-emerald)] font-bold'
+                      : 'text-[var(--text-main)] font-medium hover:text-[var(--color-civic-emerald)] hover:bg-[var(--color-surface-container-low)]',
                   )}>
-                  <div className="w-10 flex items-center justify-center shrink-0 flex-none">
+                  {active && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 h-2/3 w-[3px] bg-[var(--color-civic-emerald)] rounded-r-md" />
+                  )}
+                  <div className={cn("w-10 flex items-center justify-center shrink-0 flex-none transition-transform duration-200", 
+                    !active && "group-hover:scale-110"
+                  )}>
                     <Icon className="w-5 h-5" />
                   </div>
                   <span className={cn('ml-1 transition-opacity duration-300 ease-in-out whitespace-nowrap',
@@ -114,11 +117,11 @@ function SidebarContent({ links, user, location, onClose, onLogout, logoutLabel,
       </nav>
 
       {/* Footer / Logout */}
-      <div className={cn('px-3 py-4 border-t shrink-0', isDark ? 'border-slate-700' : 'border-gray-100')}>
+      <div className={cn('px-3 py-4 border-t shrink-0', 'border-[var(--border)]')}>
         <button onClick={onLogout}
           title={collapsed ? logoutLabel : undefined}
-          className={cn('w-full flex items-center rounded-xl text-sm font-medium text-red-500 transition-colors px-2 py-3 overflow-hidden',
-            isDark ? 'hover:bg-red-900/30' : 'hover:bg-red-50')}>
+          className={cn('w-full flex items-center rounded-xl text-sm font-medium text-[var(--color-amber-cta)] transition-colors px-2 py-3 overflow-hidden group',
+            isDark ? 'hover:bg-red-900/10' : 'hover:bg-red-50')}>
           <div className="w-10 flex items-center justify-center shrink-0 flex-none">
             <LogOut className="w-5 h-5" />
           </div>
@@ -204,10 +207,10 @@ function NotificationDropdown({ isDark }: { isDark: boolean }) {
     <div ref={ref} className="relative">
       <button onClick={() => setOpen(!open)}
         className={cn('relative p-2 rounded-xl transition-colors',
-          isDark ? 'hover:bg-slate-700 text-slate-300' : 'hover:bg-gray-100 text-gray-600')}>
+          isDark ? 'hover:bg-[var(--color-surface-container-high)] text-[var(--text-muted)] hover:text-white' : 'hover:bg-[var(--color-surface-container-low)] text-gray-600 hover:text-gray-900')}>
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+          <span className="absolute top-1 right-1 w-4 h-4 bg-[var(--color-amber-cta)] text-white text-[9px] font-bold rounded-full flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -216,15 +219,15 @@ function NotificationDropdown({ isDark }: { isDark: boolean }) {
       {open && (
         <div className={cn(
           'absolute right-0 top-full mt-2 w-80 rounded-2xl shadow-2xl border z-50 overflow-hidden',
-          isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100',
+          isDark ? 'bg-[var(--color-surface-container)] border-[var(--border)]' : 'bg-white border-gray-200',
         )}>
           <div className={cn('flex items-center justify-between px-4 py-3 border-b',
-            isDark ? 'border-slate-700' : 'border-gray-100')}>
+            isDark ? 'border-[var(--border)]' : 'border-gray-100')}>
             <h3 className={cn('text-sm font-bold', isDark ? 'text-white' : 'text-gray-900')}>Notifications</h3>
             <div className="flex gap-1">
               <button onClick={() => markAllRead.mutate()}
                 className={cn('flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-lg transition-colors',
-                  isDark ? 'text-blue-400 hover:bg-slate-700' : 'text-blue-600 hover:bg-blue-50')}>
+                  isDark ? 'text-[var(--color-civic-emerald)] hover:bg-[var(--color-surface-container-high)]' : 'text-[var(--color-civic-emerald)] hover:bg-[var(--color-surface-container-low)]')}>
                 <CheckCheck className="w-3 h-3" /> Mark All Read
               </button>
               <button onClick={() => {
@@ -233,14 +236,14 @@ function NotificationDropdown({ isDark }: { isDark: boolean }) {
                 }
               }}
                 className={cn('flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-lg transition-colors',
-                  isDark ? 'text-red-400 hover:bg-slate-700' : 'text-red-600 hover:bg-red-50')}>
+                  isDark ? 'text-[var(--color-amber-cta)] hover:bg-[var(--color-surface-container-high)]' : 'text-red-600 hover:bg-red-50')}>
                 <Trash2 className="w-3 h-3" /> Clear All
               </button>
             </div>
           </div>
           <div className="max-h-80 overflow-y-auto">
             {!notifications?.length ? (
-              <div className={cn('text-center py-8 text-sm', isDark ? 'text-slate-500' : 'text-gray-400')}>
+              <div className={cn('text-center py-8 text-sm', isDark ? 'text-[var(--text-muted)]' : 'text-gray-400')}>
                 No notifications
               </div>
             ) : (
@@ -248,19 +251,19 @@ function NotificationDropdown({ isDark }: { isDark: boolean }) {
                 <div key={n.id}
                   onClick={() => { if (!n.isRead) markRead.mutate(n.id); }}
                   className={cn('px-4 py-3 border-b cursor-pointer transition-colors',
-                    isDark ? 'border-slate-700/50 hover:bg-slate-700/50' : 'border-gray-50 hover:bg-gray-50',
-                    !n.isRead && (isDark ? 'bg-blue-900/10' : 'bg-blue-50/50'))}>
+                    isDark ? 'border-[var(--border)] hover:bg-[var(--color-surface-container-high)]' : 'border-gray-50 hover:bg-gray-50',
+                    !n.isRead && (isDark ? 'bg-[var(--color-civic-emerald)]/10' : 'bg-[var(--color-civic-emerald)]/5'))}>
                   <div className="flex items-start gap-2">
-                    {!n.isRead && <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 shrink-0" />}
+                    {!n.isRead && <div className="w-2 h-2 bg-[var(--color-civic-emerald)] rounded-full mt-1.5 shrink-0" />}
                     <div className="flex-1 min-w-0">
                       <p className={cn('text-xs font-semibold', isDark ? 'text-white' : 'text-gray-900')}>{n.title}</p>
-                      <p className={cn('text-[10px] mt-0.5 truncate', isDark ? 'text-slate-400' : 'text-gray-500')}>{n.message}</p>
-                      <p className={cn('text-[10px] mt-1', isDark ? 'text-slate-600' : 'text-gray-400')}>{timeAgo(n.createdAt)}</p>
+                      <p className={cn('text-[10px] mt-0.5 truncate', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>{n.message}</p>
+                      <p className={cn('text-[10px] mt-1 font-medium', isDark ? 'text-[var(--text-muted)]/70' : 'text-gray-400')}>{timeAgo(n.createdAt)}</p>
                     </div>
                     <button 
                       onClick={(e) => { e.stopPropagation(); deleteOne.mutate(n.id); }}
-                      className={cn('p-1 rounded hover:bg-red-100 hover:text-red-600 transition-colors shrink-0',
-                        isDark ? 'text-slate-500 hover:bg-red-900/30 hover:text-red-400' : 'text-gray-400')}
+                      className={cn('p-1 rounded transition-colors shrink-0',
+                        isDark ? 'text-[var(--text-muted)] hover:bg-[var(--color-amber-cta)]/20 hover:text-[var(--color-amber-cta)]' : 'text-gray-400 hover:bg-red-100 hover:text-red-600')}
                     >
                       <Trash2 className="w-3 h-3" />
                     </button>
@@ -271,7 +274,7 @@ function NotificationDropdown({ isDark }: { isDark: boolean }) {
           </div>
           <Link to="/dashboard/notifications" onClick={() => setOpen(false)}
             className={cn('block text-center text-xs font-semibold py-3 border-t transition-colors',
-              isDark ? 'border-slate-700 text-green-400 hover:bg-slate-700' : 'border-gray-100 text-green-700 hover:bg-green-50')}>
+              isDark ? 'border-[var(--border)] text-[var(--color-civic-emerald)] hover:bg-[var(--color-surface-container-high)]' : 'border-gray-100 text-[var(--color-civic-emerald-deep)] hover:bg-[var(--color-surface-container-low)]')}>
             View All Notifications
           </Link>
         </div>
@@ -476,11 +479,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   return (
-    <div className={cn('min-h-screen flex transition-colors duration-300', isDark ? 'bg-slate-900' : 'bg-gray-50')}>
+    <div className={cn('min-h-screen flex transition-colors duration-300', 'bg-page')}>
       <aside className={cn(
-        'hidden lg:flex flex-col fixed inset-y-0 left-0 z-40 border-r shadow-sm transition-[width] duration-300 ease-in-out',
+        'hidden lg:flex flex-col fixed inset-y-0 left-0 z-40 border-r transition-[width] duration-300 ease-in-out',
         sidebarExpanded ? 'w-64' : 'w-20',
-        isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100',
+        isDark ? 'bg-[var(--color-surface)] border-[var(--border)]' : 'bg-white border-gray-200 shadow-sm',
       )}>
         <SidebarContent {...sidebarProps} collapsed={!sidebarExpanded} />
       </aside>
@@ -488,11 +491,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setSidebarOpen(false)} />
-          <aside className={cn('relative w-64 flex flex-col z-50 shadow-2xl h-full', isDark ? 'bg-slate-800' : 'bg-white')}>
-            <button className={cn('absolute top-4 right-4 p-1.5 rounded-lg z-10',
-              isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100')}
+          <aside className={cn('relative w-64 flex flex-col z-50 shadow-2xl h-full', 
+            isDark ? 'bg-[var(--color-surface)] border-r border-[var(--border)]' : 'bg-white'
+          )}>
+            <button className={cn('absolute top-4 right-4 p-1.5 rounded-lg z-10 transition-colors',
+              isDark ? 'hover:bg-[var(--color-surface-container-high)] text-[var(--text-muted)] hover:text-white' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-900')}
               onClick={() => setSidebarOpen(false)}>
-              <X className={cn('w-5 h-5', isDark ? 'text-slate-300' : 'text-gray-600')} />
+              <X className="w-5 h-5" />
             </button>
             <SidebarContent {...sidebarProps} collapsed={false} />
           </aside>
@@ -501,23 +506,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       <div className={cn('flex-1 flex flex-col min-h-screen transition-[margin] duration-300 ease-in-out', sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20')}>
         <header className={cn(
-          'sticky top-0 z-30 px-4 lg:px-6 h-16 flex items-center justify-between border-b shadow-sm transition-colors duration-300',
-          isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100',
+          'sticky top-0 z-30 px-4 lg:px-6 h-16 flex items-center justify-between border-b transition-colors duration-300 backdrop-blur-md',
+          isDark ? 'bg-[var(--color-surface)]/80 border-[var(--border)]' : 'bg-white/90 border-gray-200',
         )}>
           {/* LEFT SECTION */}
           <div className="flex items-center gap-2 sm:gap-4">
             <button onClick={() => setSidebarOpen(true)}
               className={cn('lg:hidden p-2 -ml-2 rounded-xl transition-colors',
-                isDark ? 'hover:bg-slate-700 text-slate-300' : 'hover:bg-gray-100 text-gray-700')}>
+                isDark ? 'hover:bg-[var(--color-surface-container-high)] text-[var(--text-muted)] hover:text-white' : 'hover:bg-gray-100 text-gray-700')}>
               <Menu className="w-5 h-5" />
             </button>
             <button onClick={() => setSidebarExpanded(!sidebarExpanded)}
               className={cn('hidden lg:block p-2 -ml-2 rounded-xl transition-colors',
-                isDark ? 'hover:bg-slate-700 text-slate-300' : 'hover:bg-gray-100 text-gray-700')}>
+                isDark ? 'hover:bg-[var(--color-surface-container-high)] text-[var(--text-muted)] hover:text-white' : 'hover:bg-gray-100 text-gray-700')}>
               <Menu className="w-5 h-5" />
             </button>
-            <div className="h-6 w-px bg-gray-200 dark:bg-slate-700 hidden sm:block mx-1" />
-            <p className={cn('text-sm font-semibold hidden sm:block', isDark ? 'text-slate-300' : 'text-gray-600')}>
+            <div className={cn("h-6 w-px hidden sm:block mx-1", isDark ? "bg-[var(--border)]" : "bg-gray-200")} />
+            <p className={cn('text-sm font-semibold hidden sm:block', isDark ? 'text-[var(--text-muted)]' : 'text-gray-500')}>
               {t('dashboard.welcome')},{' '}
               <span className={isDark ? 'text-white' : 'text-gray-900'}>{user?.firstName}</span>
             </p>
@@ -527,14 +532,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-1 sm:gap-2">
             <button onClick={toggleTheme}
               className={cn('p-2 rounded-xl transition-colors',
-                isDark ? 'hover:bg-slate-700 text-yellow-400' : 'hover:bg-gray-100 text-gray-600')}>
+                isDark ? 'hover:bg-[var(--color-surface-container-high)] text-[var(--text-muted)] hover:text-yellow-400' : 'hover:bg-gray-100 text-gray-600')}>
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
             <div className="relative" ref={langRef}>
               <button onClick={() => setLangOpen(!langOpen)}
                 className={cn('flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors',
-                  isDark ? 'hover:bg-slate-700 text-slate-300' : 'hover:bg-gray-100 text-gray-600')}>
+                  isDark ? 'hover:bg-[var(--color-surface-container-high)] text-[var(--text-muted)] hover:text-white' : 'hover:bg-gray-100 text-gray-600')}>
                 <Globe className="w-4 h-4" />
                 <span className="hidden sm:inline">{currentLang.flag} {currentLang.label}</span>
                 <span className="sm:hidden">{currentLang.flag}</span>
@@ -543,7 +548,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {langOpen && (
                 <div className={cn(
                   'absolute right-0 top-full mt-2 rounded-2xl shadow-2xl border py-2 min-w-[170px] z-50',
-                  isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100',
+                  isDark ? 'bg-[var(--color-surface-container)] border-[var(--border)]' : 'bg-white border-gray-200',
                 )}>
                   {LANGUAGES.map(lang => (
                     <button key={lang.code}
@@ -551,8 +556,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       className={cn(
                         'w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 transition-colors',
                         i18n.language === lang.code
-                          ? 'text-green-600 font-semibold bg-green-50 dark:bg-green-900/30'
-                          : (isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-green-50'),
+                          ? (isDark ? 'text-[var(--color-civic-emerald)] font-semibold bg-[var(--color-civic-emerald)]/10' : 'text-[var(--color-civic-emerald-deep)] font-semibold bg-[var(--color-civic-emerald)]/5')
+                          : (isDark ? 'text-[var(--text-muted)] hover:bg-[var(--color-surface-container-high)] hover:text-white' : 'text-gray-700 hover:bg-gray-50'),
                       )}>
                       <span>{lang.flag}</span> {lang.label}
                     </button>
