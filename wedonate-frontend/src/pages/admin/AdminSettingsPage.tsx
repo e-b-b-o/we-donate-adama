@@ -48,7 +48,7 @@ export default function AdminSettingsPage() {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" /></div>
       ) : (
         <div className="space-y-6">
           <Card className="p-6">
@@ -80,13 +80,13 @@ export default function AdminSettingsPage() {
               <div>
                 <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>Mission Statement</label>
                 <textarea value={form.missionStatement} onChange={e => setForm(p => ({ ...p, missionStatement: e.target.value }))} rows={3}
-                  className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500',
+                  className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                     isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-200')} />
               </div>
               <div>
                 <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>About Text</label>
                 <textarea value={form.aboutText} onChange={e => setForm(p => ({ ...p, aboutText: e.target.value }))} rows={5}
-                  className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500',
+                  className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                     isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-200')} />
               </div>
             </div>

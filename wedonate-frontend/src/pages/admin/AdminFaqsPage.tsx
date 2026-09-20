@@ -76,25 +76,25 @@ export default function AdminFaqsPage() {
             <div>
               <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>Question *</label>
               <input value={form.question} onChange={e => setForm(p => ({ ...p, question: e.target.value }))}
-                className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500',
+                className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                   isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')} />
             </div>
             <div>
               <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>Answer *</label>
               <textarea value={form.answer} onChange={e => setForm(p => ({ ...p, answer: e.target.value }))} rows={4}
-                className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500',
+                className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                   isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-200')} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>Sort Order</label>
                 <input type="number" value={form.sortOrder} onChange={e => setForm(p => ({ ...p, sortOrder: parseInt(e.target.value) || 0 }))}
-                  className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500',
+                  className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                     isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')} />
               </div>
               <div className="flex items-end pb-1">
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={form.isActive} onChange={e => setForm(p => ({ ...p, isActive: e.target.checked }))} className="w-4 h-4 text-green-600 rounded" />
+                  <input type="checkbox" checked={form.isActive} onChange={e => setForm(p => ({ ...p, isActive: e.target.checked }))} className="w-4 h-4 text-[var(--color-civic-emerald)] rounded" />
                   <span className={cn('text-sm', isDark ? 'text-slate-300' : 'text-gray-700')}>Active</span>
                 </label>
               </div>
@@ -108,7 +108,7 @@ export default function AdminFaqsPage() {
       )}
 
       {isLoading ? (
-        <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" /></div>
       ) : !faqs?.length ? (
         <Card className={cn('text-center py-16', isDark ? 'text-slate-400' : 'text-gray-400')}>
           <HelpCircle className={cn('w-12 h-12 mx-auto mb-3', isDark ? 'text-slate-600' : 'text-gray-200')} />
