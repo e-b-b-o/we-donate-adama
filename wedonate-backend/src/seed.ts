@@ -115,7 +115,7 @@ async function main() {
         status: 'PUBLISHED',
         isPublished: true,
         publishedAt: new Date(),
-        imageUrl: 'https://res.cloudinary.com/lggovb15/image/upload/v1726760721/n5f6vokf12s0x8koyd9x.jpg'
+        imageUrl: '/Adama_city2.webp'
       }
     });
   } else {
@@ -157,7 +157,7 @@ async function main() {
         isPublished: true,
         publishedAt: new Date(),
         deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-        imageUrl: 'https://res.cloudinary.com/lggovb15/image/upload/v1726760721/n5f6vokf12s0x8koyd9x.jpg'
+        imageUrl: '/Adama_city2.webp'
       }
     });
   } else {
@@ -226,7 +226,7 @@ async function main() {
         title: 'Launch of Adama WeDonate Platform',
         content: 'We are excited to announce the official launch of the WeDonate platform in Adama. Join us to support the community.',
         isPublished: true,
-        imageUrl: 'https://res.cloudinary.com/lggovb15/image/upload/v1726760721/n5f6vokf12s0x8koyd9x.jpg'
+        imageUrl: '/Adama_city2.webp'
       }
     });
   }
@@ -249,7 +249,7 @@ async function main() {
     await prisma.heroImage.create({
       data: {
         id: uuidv4(),
-        imageUrl: 'https://res.cloudinary.com/lggovb15/image/upload/v1726760721/n5f6vokf12s0x8koyd9x.jpg',
+        imageUrl: '/Adama_city2.webp',
         caption: 'Supporting Adama Together',
         isActive: true,
         sortOrder: 1
@@ -262,7 +262,7 @@ async function main() {
     await prisma.galleryPhoto.create({
       data: {
         id: uuidv4(),
-        imageUrl: 'https://res.cloudinary.com/lggovb15/image/upload/v1726760721/n5f6vokf12s0x8koyd9x.jpg',
+        imageUrl: '/Adama_city2.webp',
         title: 'Community Distribution Event',
         description: 'Volunteers distributing clothes to families in need.',
         uploadedBy: 'systemadmin@test.com'
