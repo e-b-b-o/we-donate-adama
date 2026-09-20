@@ -504,7 +504,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       )}
 
-      <div className={cn('flex-1 flex flex-col min-h-screen transition-[margin] duration-300 ease-in-out', sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20')}>
+      <div className={cn('flex-1 flex flex-col min-w-0 min-h-screen transition-[margin] duration-300 ease-in-out', sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20')}>
         <header className={cn(
           'sticky top-0 z-30 px-4 lg:px-6 h-16 flex items-center justify-between border-b transition-colors duration-300 backdrop-blur-md',
           isDark ? 'bg-[var(--color-surface)]/80 border-[var(--border)]' : 'bg-white/90 border-gray-200',
@@ -570,7 +570,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        <main className="flex-1 p-4 lg:p-8">
+        <main className="flex-1 p-4 lg:p-8 min-w-0">
             <ErrorBoundary>
               {children}
             </ErrorBoundary>
