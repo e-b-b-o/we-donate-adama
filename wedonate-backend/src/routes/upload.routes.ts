@@ -1,31 +1,26 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
-import { authenticate } from '../middleware/auth.middleware';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
-const uploadDir = path.join(process.cwd(), 'uploads', 'images');
-fs.mkdirSync(uploadDir, { recursive: true });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadDir),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, `${uuidv4()}${ext}`);
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    return {
+      folder: 'wedonate',
+      allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp', 'pdf'],
+    };
   },
 });
 
-const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const allowed = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.jfif', '.pdf'];
-  const ext = path.extname(file.originalname).toLowerCase();
-  if (allowed.includes(ext)) cb(null, true);
-  else cb(new Error('Only image and PDF files are allowed'));
-};
-
 const upload = multer({
   storage,
-  fileFilter,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
 });
 
@@ -37,7 +32,8 @@ router.post('/', upload.single('image'), (req: Request, res: Response, next: Nex
       res.status(400).json({ success: false, message: 'No file uploaded' });
       return;
     }
-    const imageUrl = `/uploads/images/${req.file.filename}`;
+    // req.file.path holds the remote URL when using CloudinaryStorage
+    const imageUrl = req.file.path; 
     res.json({ success: true, data: { imageUrl, filename: req.file.filename } });
   } catch (error) {
     next(error);
