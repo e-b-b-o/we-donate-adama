@@ -79,11 +79,11 @@ export default function PaymentReconciliationPage() {
 
       {isLoading ? (
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !filtered.length ? (
         <Card className={cn('text-center py-16', isDark ? 'text-slate-400' : 'text-gray-400')}>
-          <CheckCircle className={cn('w-12 h-12 mx-auto mb-3', isDark ? 'text-green-600' : 'text-green-400')} />
+          <CheckCircle className={cn('w-12 h-12 mx-auto mb-3', isDark ? 'text-[var(--color-civic-emerald)]' : 'text-emerald-400')} />
           <p className="font-medium">All payments are reconciled</p>
           <p className="text-xs mt-1">No pending donations to verify.</p>
         </Card>
@@ -96,7 +96,7 @@ export default function PaymentReconciliationPage() {
                   {/* Donor info */}
                   <div className="flex items-center gap-3 flex-1">
                     <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0',
-                      isDark ? 'bg-green-900/40 text-green-400' : 'bg-green-100 text-green-700')}>
+                      isDark ? 'bg-emerald-900/20 text-emerald-400' : 'bg-emerald-100 text-[var(--color-civic-emerald)]')}>
                       {d.donor?.firstName?.[0]}{d.donor?.lastName?.[0]}
                     </div>
                     <div>
@@ -109,7 +109,7 @@ export default function PaymentReconciliationPage() {
 
                   {/* Amount */}
                   <div className="text-right">
-                    <p className="text-xl font-extrabold text-green-700">{formatCurrency(d.amount || 0)}</p>
+                    <p className="text-xl font-extrabold text-[var(--color-civic-emerald)]">{formatCurrency(d.amount || 0)}</p>
                     <p className={cn('text-xs', isDark ? 'text-slate-400' : 'text-gray-500')}>{d.paymentMethod || 'N/A'} · {formatDate(d.createdAt)}</p>
                   </div>
                 </div>

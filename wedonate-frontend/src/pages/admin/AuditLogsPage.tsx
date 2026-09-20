@@ -13,12 +13,12 @@ import Button from '../../components/ui/Button';
 const ACTION_COLORS: Record<string, string> = {
   LOGIN: 'text-blue-600 bg-blue-50',
   CREATE_USER: 'text-indigo-600 bg-indigo-50',
-  ASSIGN_ROLE: 'text-purple-600 bg-purple-50',
-  ACTIVATE_USER: 'text-green-600 bg-green-50',
+  ASSIGN_ROLE: 'text-amber-600 bg-amber-50',
+  ACTIVATE_USER: 'text-[var(--color-civic-emerald)] bg-emerald-50',
   SUSPEND_USER: 'text-red-600 bg-red-50',
-  VERIFY_DONATION: 'text-green-600 bg-green-50',
+  VERIFY_DONATION: 'text-[var(--color-civic-emerald)] bg-emerald-50',
   REJECT_DONATION: 'text-red-600 bg-red-50',
-  PAYMENT_SUCCESS: 'text-green-600 bg-green-50',
+  PAYMENT_SUCCESS: 'text-[var(--color-civic-emerald)] bg-emerald-50',
   PAYMENT_FAILED: 'text-red-600 bg-red-50',
   VERIFY_ORG: 'text-blue-600 bg-blue-50',
   UNVERIFY_ORG: 'text-orange-600 bg-orange-50',
@@ -139,22 +139,22 @@ export default function AuditLogsPage() {
             value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} />
         </div>
         <select value={actionFilter} onChange={e => { setActionFilter(e.target.value); setPage(1); }}
-          className={cn('rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 min-w-[160px]',
+          className={cn('rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)] min-w-[160px]',
             isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')}>
           <option value="">All Actions</option>
           {uniqueActions.map(a => <option key={a} value={a}>{a}</option>)}
         </select>
         <input type="date" value={dateFrom} onChange={e => { setDateFrom(e.target.value); setPage(1); }}
-          className={cn('rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500',
+          className={cn('rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
             isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')} />
         <input type="date" value={dateTo} onChange={e => { setDateTo(e.target.value); setPage(1); }}
-          className={cn('rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500',
+          className={cn('rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
             isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')} />
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center h-48">
-          <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !logs.length ? (
         <Card className={cn('text-center py-16', isDark ? 'text-slate-400' : 'text-gray-400')}>
@@ -166,18 +166,18 @@ export default function AuditLogsPage() {
           <Card padding="none" className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className={cn('border-b', isDark ? 'bg-slate-700/50 border-slate-700' : 'bg-gray-50 border-gray-100')}>
+                <thead className={cn('border-b', isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-gray-50/80 border-gray-100')}>
                   <tr>
-                    <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>{t('admin.action')}</th>
-                    <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>{t('admin.user')}</th>
-                    <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>{t('admin.resource')}</th>
-                    <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>{t('admin.details')}</th>
-                    <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>{t('admin.time')}</th>
+                    <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.action')}</th>
+                    <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.user')}</th>
+                    <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.resource')}</th>
+                    <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.details')}</th>
+                    <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.time')}</th>
                   </tr>
                 </thead>
                 <tbody className={cn('divide-y', isDark ? 'divide-slate-700' : 'divide-gray-50')}>
                   {logs.map((log: any) => (
-                    <tr key={log.id} className={cn('transition-colors', isDark ? 'hover:bg-slate-700/40' : 'hover:bg-gray-50')}>
+                    <tr key={log.id} className={cn('transition-colors', isDark ? 'hover:bg-slate-800/30' : 'hover:bg-gray-50/50')}>
                       <td className="px-5 py-3.5">
                         <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${ACTION_COLORS[log.action] || (isDark ? 'text-slate-300 bg-slate-700' : 'text-gray-600 bg-gray-100')}`}>
                           {log.action}
