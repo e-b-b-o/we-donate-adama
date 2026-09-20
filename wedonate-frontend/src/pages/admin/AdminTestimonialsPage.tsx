@@ -39,7 +39,7 @@ export default function AdminTestimonialsPage() {
   });
 
   const inp = cn(
-    'w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500',
+    'w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
     isDark ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' : 'bg-white border-gray-300 text-gray-900',
   );
   const lbl = cn('block text-sm font-medium mb-1.5', isDark ? 'text-slate-300' : 'text-gray-700');
@@ -127,7 +127,7 @@ export default function AdminTestimonialsPage() {
 
       {isLoading ? (
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !testimonials?.length ? (
         <Card className="text-center py-16">
@@ -148,17 +148,17 @@ export default function AdminTestimonialsPage() {
                 className="absolute top-3 right-3 w-8 h-8 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all shadow-lg">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
-              <Quote className={cn('w-6 h-6 mb-3', isDark ? 'text-green-800' : 'text-green-200')} />
+              <Quote className={cn('w-6 h-6 mb-3', isDark ? 'text-[var(--color-civic-emerald)]' : 'text-emerald-200')} />
               <p className={cn('text-sm italic mb-4', isDark ? 'text-slate-300' : 'text-gray-600')}>
                 "{t.text}"
               </p>
               <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
-                <div className="w-9 h-9 rounded-full bg-green-700 text-white flex items-center justify-center font-bold text-xs">
+                <div className="w-9 h-9 rounded-full bg-[var(--color-civic-emerald)] text-white flex items-center justify-center font-bold text-xs">
                   {t.avatar || t.name.split(' ').map((n: string) => n[0]).join('')}
                 </div>
                 <div className="flex-1">
                   <p className={cn('text-sm font-semibold', isDark ? 'text-white' : 'text-gray-800')}>{t.name}</p>
-                  <p className="text-xs text-green-500">{t.role}</p>
+                  <p className="text-xs text-emerald-500">{t.role}</p>
                 </div>
                 <div className="flex gap-0.5">
                   {[...Array(t.rating || 5)].map((_, s) => (
