@@ -22,7 +22,7 @@ const URGENCY_MAP: Record<number, { label: string; color: string }> = {
   4: { label: 'Critical', color: 'bg-orange-100 text-orange-700 border-orange-200' },
   3: { label: 'High', color: 'bg-amber-100 text-amber-700 border-amber-200' },
   2: { label: 'Medium', color: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-  1: { label: 'Standard', color: 'bg-green-100 text-green-700 border-green-200' },
+  1: { label: 'Standard', color: 'bg-green-100 text-[var(--color-civic-emerald)] border-green-200' },
 };
 
 const REQUEST_CATEGORIES = [
@@ -101,7 +101,7 @@ function CreateForUserModal({ isOpen, onClose, isDark }: { isOpen: boolean; onCl
   const [reqForm, setReqForm] = useState(EMPTY_REQUEST_FORM);
   const [campForm, setCampForm] = useState(EMPTY_CAMPAIGN_FORM);
 
-  const input = cn('w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors',
+  const input = cn('w-full rounded-xl border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)] transition-colors',
     isDark ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' : 'bg-white border-gray-300');
   const label = cn('block text-xs font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700');
 
@@ -258,8 +258,8 @@ function CreateForUserModal({ isOpen, onClose, isDark }: { isOpen: boolean; onCl
               <ImageUpload label="" value={reqForm.imageUrl} onChange={v => setReqForm(p => ({ ...p, imageUrl: v }))}
                 hint="Optional photo" accept="image/*" />
             </div>
-            <div className={cn('rounded-xl p-4 space-y-3', isDark ? 'bg-slate-700/50 border border-slate-600' : 'bg-green-50 border border-green-200')}>
-              <p className={cn('text-xs font-bold', isDark ? 'text-green-400' : 'text-green-700')}>Payment Accounts</p>
+            <div className={cn('rounded-xl p-4 space-y-3', isDark ? 'bg-slate-700/50 border border-slate-600' : 'bg-[var(--color-surface)] border border-[var(--border)]')}>
+              <p className={cn('text-xs font-bold', isDark ? 'text-[var(--color-civic-emerald)]' : 'text-[var(--color-civic-emerald)]')}>Payment Accounts</p>
               <div className="grid grid-cols-2 gap-3">
                 <div><label className={label}>TeleBirr</label><input className={input} value={reqForm.telebirrAccount} onChange={e => setReqForm(p => ({ ...p, telebirrAccount: e.target.value }))} /></div>
                 <div><label className={label}>CBE</label><input className={input} value={reqForm.cbeAccount} onChange={e => setReqForm(p => ({ ...p, cbeAccount: e.target.value }))} /></div>
@@ -389,89 +389,95 @@ export default function AdminRequestsPage() {
     const publishMutate = type === 'requests' ? publishReq : publishCamp;
 
     return (
-      <Card key={item.id} className="overflow-hidden">
-        <div className="p-5">
-          <div className="flex flex-col lg:flex-row lg:items-start gap-4">
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                <h3 className={cn('text-sm font-bold', isDark ? 'text-white' : 'text-gray-900')}>{item.title}</h3>
-                <Badge variant={statusVariant(item.status)}>{item.status}</Badge>
-                {item.category && (
-                  <span className={cn('text-xs px-2 py-0.5 rounded-full', isDark ? 'bg-slate-700 text-slate-400' : 'bg-gray-100 text-gray-600')}>
-                    {item.category}
-                  </span>
-                )}
-                {item.urgencyLevel && (
-                  <span className={cn('text-xs px-2 py-0.5 rounded-full border font-semibold', URGENCY_MAP[item.urgencyLevel]?.color)}>
-                    {URGENCY_MAP[item.urgencyLevel]?.label}
-                  </span>
-                )}
-                {item.isPublished && (
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-semibold">Published</span>
-                )}
-                {item.source === 'ASSISTED' && (
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-semibold">Assisted</span>
-                )}
-              </div>
-              <p className={cn('text-xs line-clamp-2 mb-2', isDark ? 'text-slate-400' : 'text-gray-600')}>{item.description}</p>
-              <div className="flex items-center gap-3 text-xs">
-                {item.user ? (
-                  <>
-                    {item.user.profileImage ? (
-                      <img src={item.user.profileImage} className="w-5 h-5 rounded-full object-cover" alt="" />
-                    ) : (
-                      <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-[9px]">
-                        {item.user.firstName?.[0]}
-                      </div>
-                    )}
-                    <span className={isDark ? 'text-slate-400' : 'text-gray-500'}>
-                      {item.user.firstName} {item.user.lastName} {item.user.verificationStatus === 'VERIFIED' && <BadgeCheck className="w-3.5 h-3.5 inline text-blue-500" />} · {item.user.email}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <div className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-[9px]">
-                      {item.beneficiaryName?.[0] || '?'}
-                    </div>
-                    <span className={isDark ? 'text-slate-400' : 'text-gray-500'}>
-                      {item.beneficiaryName || 'Assisted Beneficiary'}
-                      {item.beneficiaryPhone ? ` · ${item.beneficiaryPhone}` : ''}
-                    </span>
-                  </>
-                )}
-                <span className={isDark ? 'text-slate-600' : 'text-gray-300'}>·</span>
-                <span className={isDark ? 'text-slate-500' : 'text-gray-400'}>{formatDate(item.createdAt)}</span>
-              </div>
+      <div key={item.id} className={cn('transition-colors overflow-hidden', isDark ? 'hover:bg-slate-800/30' : 'hover:bg-gray-50/50')}>
+        <div className="px-5 py-4 flex flex-col lg:flex-row lg:items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
+              <h3 className={cn('text-sm font-bold truncate', isDark ? 'text-white' : 'text-gray-900')}>{item.title}</h3>
+              <Badge variant={statusVariant(item.status)}>{item.status}</Badge>
+              {item.category && (
+                <span className={cn('text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded', isDark ? 'bg-slate-800 text-slate-400' : 'bg-gray-100 text-gray-500')}>
+                  {item.category}
+                </span>
+              )}
+              {item.urgencyLevel && (
+                <span className={cn('text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded border', URGENCY_MAP[item.urgencyLevel]?.color)}>
+                  {URGENCY_MAP[item.urgencyLevel]?.label}
+                </span>
+              )}
+              {item.isPublished && (
+                <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Published</span>
+              )}
+              {item.source === 'ASSISTED' && (
+                <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">Assisted</span>
+              )}
             </div>
-
-            <div className="flex items-center gap-2 shrink-0 flex-wrap">
-              <button onClick={() => toggleExpand(item.id)}
-                className={cn('flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors',
-                  isDark ? 'bg-slate-700 hover:bg-slate-600 text-slate-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600')}>
-                <Eye className="w-3.5 h-3.5" />
-                {isOpen ? t('admin.hide') : t('admin.view_details')}
-                {isOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-              </button>
-              <button
-                onClick={() => setDeletingItem({ item, type })}
-                title={type === 'requests' ? 'Delete request' : 'Delete campaign'}
-                className={cn('flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors',
-                  isDark ? 'bg-red-900/30 hover:bg-red-900/50 text-red-400' : 'bg-red-50 hover:bg-red-100 text-red-700')}>
-                <Trash2 className="w-3.5 h-3.5" />
-                Delete
-              </button>
+            
+            <div className="flex items-center gap-3 text-xs">
+              {item.user ? (
+                <span className={cn('flex items-center gap-1.5 font-medium', isDark ? 'text-slate-300' : 'text-gray-700')}>
+                  {item.user.profileImage ? (
+                    <img src={item.user.profileImage} className="w-4 h-4 rounded-full object-cover" alt="" />
+                  ) : (
+                    <div className="w-4 h-4 rounded-full bg-[var(--color-civic-emerald)] flex items-center justify-center text-white font-bold text-[8px]">
+                      {item.user.firstName?.[0]}
+                    </div>
+                  )}
+                  {item.user.firstName} {item.user.lastName}
+                  {item.user.verificationStatus === 'VERIFIED' && <BadgeCheck className="w-3 h-3 text-blue-500" />}
+                </span>
+              ) : (
+                <span className={cn('flex items-center gap-1.5 font-medium', isDark ? 'text-slate-300' : 'text-gray-700')}>
+                  <div className="w-4 h-4 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center text-[8px] font-bold">
+                    {item.beneficiaryName?.[0] || '?'}
+                  </div>
+                  {item.beneficiaryName || 'Assisted Beneficiary'}
+                </span>
+              )}
+              <span className={isDark ? 'text-slate-600' : 'text-gray-300'}>|</span>
+              <span className={isDark ? 'text-slate-400' : 'text-gray-500'}>{formatDate(item.createdAt)}</span>
+              {item.location && (
+                <>
+                  <span className={isDark ? 'text-slate-600' : 'text-gray-300'}>|</span>
+                  <span className={isDark ? 'text-slate-400' : 'text-gray-500'}>{item.location}</span>
+                </>
+              )}
             </div>
           </div>
 
-          {/* Admin note + actions for PENDING */}
-          {((isKebeleAdmin && type === 'requests' && item.status === 'PENDING_REVIEW') || (isHighAdmin && type === 'requests' && item.status === 'PENDING_CITY_APPROVAL') || (isHighAdmin && type === 'campaigns' && (item.status === 'PENDING_REVIEW' || item.status === 'DRAFT'))) && (
-            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <textarea placeholder={t('admin.admin_note_placeholder')} value={notes[item.id] || ''} rows={2}
+          <div className="flex items-center gap-2 shrink-0">
+            {((isKebeleAdmin && type === 'requests' && item.status === 'PENDING_REVIEW') || (isHighAdmin && type === 'requests' && item.status === 'PENDING_CITY_APPROVAL') || (isHighAdmin && type === 'campaigns' && (item.status === 'PENDING_REVIEW' || item.status === 'DRAFT'))) && (
+               <div className="hidden sm:flex items-center gap-2 mr-2 pr-4 border-r border-gray-200 dark:border-slate-700">
+                 {!isOpen && (
+                   <span className="text-[10px] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Needs Review</span>
+                 )}
+               </div>
+            )}
+            
+            <button
+              onClick={() => setDeletingItem({ item, type })}
+              title="Delete"
+              className={cn('p-2 rounded-lg transition-colors',
+                isDark ? 'text-slate-500 hover:text-red-400 hover:bg-red-900/20' : 'text-gray-400 hover:text-red-600 hover:bg-red-50')}>
+              <Trash2 className="w-4 h-4" />
+            </button>
+            <Button variant="ghost" size="sm" onClick={() => toggleExpand(item.id)}
+              className={cn('text-xs gap-1', isOpen && (isDark ? 'bg-slate-800' : 'bg-gray-100'))}>
+              <Eye className="w-3.5 h-3.5" />
+              {isOpen ? t('admin.hide') : t('admin.view_details')}
+            </Button>
+          </div>
+        </div>
+
+        {isOpen && (
+          <div className={cn('px-5 pb-5 pt-3 border-t', isDark ? 'border-slate-800 bg-slate-900/20' : 'border-gray-100 bg-gray-50/50')}>
+            {((isKebeleAdmin && type === 'requests' && item.status === 'PENDING_REVIEW') || (isHighAdmin && type === 'requests' && item.status === 'PENDING_CITY_APPROVAL') || (isHighAdmin && type === 'campaigns' && (item.status === 'PENDING_REVIEW' || item.status === 'DRAFT'))) && (
+              <div className={cn('mb-6 p-4 rounded-xl border flex flex-col sm:flex-row gap-3', isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200 shadow-sm')}>
+                <textarea placeholder={t('admin.admin_note_placeholder')} value={notes[item.id] || ''} rows={1}
                   onChange={e => setNotes(p => ({ ...p, [item.id]: e.target.value }))}
-                  className={cn('flex-1 rounded-xl border px-3 py-2 text-xs resize-none focus:outline-none focus:ring-2 focus:ring-green-500',
-                    isDark ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-500' : 'bg-white border-gray-200')} />
-                <div className="flex gap-2">
+                  className={cn('flex-1 rounded-lg border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
+                    isDark ? 'bg-slate-900/50 border-slate-600 text-white placeholder-slate-500' : 'bg-gray-50 border-gray-200')} />
+                <div className="flex gap-2 shrink-0">
                   <Button size="sm" leftIcon={<CheckCircle className="w-3.5 h-3.5" />}
                     isLoading={mutate.isPending}
                     onClick={() => mutate.mutate({ id: item.id, status: type === 'campaigns' ? 'PUBLISHED' : 'APPROVED', adminNote: notes[item.id] })}>
@@ -482,7 +488,7 @@ export default function AdminRequestsPage() {
                     {t('admin.reject')}
                   </Button>
                   {isHighAdmin && (item.status === 'PENDING_CITY_APPROVAL' || (type === 'campaigns' && (item.status === 'PENDING_REVIEW' || item.status === 'DRAFT'))) && (
-                    <Button size="sm" variant="outline" className="text-orange-500 border-orange-200"
+                    <Button size="sm" variant="outline" className="text-amber-600 border-amber-200 hover:bg-amber-50 dark:text-amber-400 dark:border-amber-900/50 dark:hover:bg-amber-900/20"
                       onClick={() => {
                         if (!notes[item.id]?.trim()) { toast.error('Please provide a reason in the note'); return; }
                         mutate.mutate({ id: item.id, status: 'CHANGES_REQUESTED', adminNote: notes[item.id] });
@@ -492,193 +498,135 @@ export default function AdminRequestsPage() {
                   )}
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Actions for APPROVED or PUBLISHED */}
-          {(item.status === 'APPROVED' || item.status === 'PUBLISHED') && (
-            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 flex gap-2">
-              {!item.isPublished && (
-                <Button size="sm" leftIcon={<Send className="w-3.5 h-3.5" />}
-                  isLoading={publishMutate.isPending}
-                  onClick={() => publishMutate.mutate(item.id)}>
-                  Publish
-                </Button>
-              )}
-              {type === 'requests' && (
-                <Button size="sm" variant="secondary" leftIcon={<CheckSquare className="w-3.5 h-3.5" />}
-                  isLoading={fulfillReq.isPending}
-                  onClick={() => fulfillReq.mutate(item.id)}>
-                  Mark Fulfilled
-                </Button>
-              )}
-            </div>
-          )}
-
-          {item.adminNote && (
-            <div className={cn('mt-3 text-xs px-3 py-2 rounded-lg',
-              isDark ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-50 text-blue-700')}>
-              <span className="font-semibold">{t('admin.admin_note_label')}</span>{item.adminNote}
-            </div>
-          )}
-        </div>
-
-        {/* Expanded details — full information */}
-        {isOpen && (
-          <div className={cn('px-5 pb-5 border-t space-y-5', isDark ? 'border-slate-700 bg-slate-700/30' : 'border-gray-100 bg-gray-50/50')}>
-            <p className={cn('text-xs font-bold pt-4 mb-1 uppercase tracking-wide', isDark ? 'text-slate-300' : 'text-gray-600')}>{t('admin.full_details')}</p>
-
-            {/* Full description */}
-            <div>
-              <p className={cn('text-xs font-semibold mb-2', isDark ? 'text-slate-400' : 'text-gray-500')}>Description</p>
-              <div className={cn('rounded-xl p-4 text-xs whitespace-pre-wrap leading-relaxed', isDark ? 'bg-slate-800 text-slate-300' : 'bg-white border text-gray-700')}>
-                {item.description}
-              </div>
-            </div>
-
-            {/* Main photo */}
-            {item.imageUrl && (
-              <div>
-                <p className={cn('text-xs font-semibold mb-2', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.request_photo')}</p>
-                <a href={item.imageUrl} target="_blank" rel="noopener noreferrer">
-                  <img src={item.imageUrl} alt="Request" className="rounded-xl max-h-64 object-contain w-full border cursor-pointer hover:opacity-90 transition-opacity" />
-                  <span className={cn('flex items-center gap-1 text-xs mt-1', isDark ? 'text-blue-400' : 'text-blue-600')}>
-                    <ExternalLink className="w-3 h-3" /> {t('admin.open_full_image')}
-                  </span>
-                </a>
-              </div>
             )}
 
-            {/* Funding progress */}
-            {item.goalAmount && (
-              <div>
-                <p className={cn('text-xs font-semibold mb-2', isDark ? 'text-slate-400' : 'text-gray-500')}>Funding</p>
-                <div className={cn('rounded-xl p-4', isDark ? 'bg-slate-800' : 'bg-white border')}>
-                  <div className="flex justify-between text-xs mb-2">
-                    <span className="text-green-500 font-semibold">{formatCurrency(item.raisedAmount)} raised</span>
-                    <span className={isDark ? 'text-slate-400' : 'text-gray-500'}>goal {formatCurrency(item.goalAmount)}</span>
-                  </div>
-                  <div className={cn('h-2 rounded-full overflow-hidden', isDark ? 'bg-slate-700' : 'bg-gray-200')}>
-                    <div className="h-full bg-green-500 rounded-full"
-                      style={{ width: `${Math.min(((item.raisedAmount || 0) / item.goalAmount) * 100, 100)}%` }} />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Overview grid */}
-            <div className={cn('rounded-xl p-4 space-y-2', isDark ? 'bg-slate-800' : 'bg-white border')}>
-              <DetailRow label="Status" value={item.status} isDark={isDark} />
-              {item.urgencyLevel && (
-                <DetailRow label="Urgency" value={`${URGENCY_MAP[item.urgencyLevel]?.label || item.urgencyLevel} (Level ${item.urgencyLevel})`} isDark={isDark} />
-              )}
-              <DetailRow label={t('admin.location_label')} value={item.location} isDark={isDark} />
-              <DetailRow label={t('admin.family_size')} value={item.familySize ? `${item.familySize} people` : null} isDark={isDark} />
-              <DetailRow label={t('admin.goal_amount')} value={item.goalAmount ? formatCurrency(item.goalAmount) : null} isDark={isDark} />
-              <DetailRow label="Raised So Far" value={formatCurrency(item.raisedAmount || 0)} isDark={isDark} />
-              {type === 'campaigns' && (
-                <DetailRow label="Deadline" value={item.deadline ? formatDate(item.deadline) : null} isDark={isDark} />
-              )}
-              <DetailRow label="Published" value={
-                item.isPublished
-                  ? `Yes${item.publishedAt ? ` — ${formatDate(item.publishedAt)}` : ''}`
-                  : null
-              } isDark={isDark} />
-              <DetailRow label="Source" value={item.source === 'ASSISTED' ? 'Assisted (Created by Admin)' : 'Self-Service'} isDark={isDark} />
-              <DetailRow label="Submitted" value={formatDate(item.createdAt)} isDark={isDark} />
-              <DetailRow label="Last Updated" value={formatDate(item.updatedAt)} isDark={isDark} />
-            </div>
-
-            {/* Requester / Beneficiary info */}
-            <div>
-              <p className={cn('text-xs font-semibold mb-2', isDark ? 'text-slate-400' : 'text-gray-500')}>
-                {item.user ? 'Requester Information' : 'Assisted Beneficiary Snapshot'}
-              </p>
-              <div className={cn('rounded-xl p-4 space-y-2', isDark ? 'bg-slate-800' : 'bg-white border')}>
-                {item.user ? (
-                  <>
-                    <DetailRow label="Name" value={`${item.user.firstName ?? ''} ${item.user.lastName ?? ''}`.trim()} isDark={isDark} />
-                    <DetailRow label="Email" value={item.user.email} isDark={isDark} />
-                    <DetailRow label={t('admin.phone')} value={item.user.phone} isDark={isDark} />
-                  </>
-                ) : (
-                  <>
-                    <DetailRow label="Name" value={item.beneficiaryName} isDark={isDark} />
-                    <DetailRow label="ID Type" value={item.beneficiaryIdType?.replace(/_/g, ' ')} isDark={isDark} />
-                    <DetailRow label="ID Number" value={item.beneficiaryIdNum} isDark={isDark} />
-                    <DetailRow label="FAN Number" value={item.beneficiaryFanNumber} isDark={isDark} />
-                    <DetailRow label="Phone" value={item.beneficiaryPhone} isDark={isDark} />
-                  </>
+            {(item.status === 'APPROVED' || item.status === 'PUBLISHED') && (
+              <div className="mb-6 flex gap-2">
+                {!item.isPublished && (
+                  <Button size="sm" leftIcon={<Send className="w-3.5 h-3.5" />}
+                    isLoading={publishMutate.isPending}
+                    onClick={() => publishMutate.mutate(item.id)}>
+                    Publish
+                  </Button>
+                )}
+                {type === 'requests' && (
+                  <Button size="sm" variant="secondary" leftIcon={<CheckSquare className="w-3.5 h-3.5" />}
+                    isLoading={fulfillReq.isPending}
+                    onClick={() => fulfillReq.mutate(item.id)}>
+                    Mark Fulfilled
+                  </Button>
                 )}
               </div>
-            </div>
-
-            {/* Documents */}
-            {item.supportLetterUrl && (
-              <div>
-                <p className={cn('text-xs font-semibold mb-2', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.support_letter')}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { label: t('admin.support_letter'), url: item.supportLetterUrl },
-                    { label: 'Beneficiary Front ID', url: item.beneficiaryFrontIdUrl },
-                    { label: 'Beneficiary Back ID', url: item.beneficiaryBackIdUrl },
-                  ].filter(d => d.url).map(d => (
-                    <a key={d.label} href={d.url} target="_blank" rel="noopener noreferrer"
-                      className={cn('rounded-xl overflow-hidden border group relative block',
-                        isDark ? 'border-slate-600 bg-slate-800' : 'border-gray-200 bg-white')}>
-                      <img src={d.url} alt={d.label}
-                        className="w-full h-28 object-cover group-hover:opacity-80 transition-opacity"
-                        onError={e => (e.currentTarget.style.display = 'none')} />
-                      <span className={cn('block text-[10px] font-medium px-2 py-1.5 truncate',
-                        isDark ? 'text-blue-400' : 'text-blue-600')}>
-                        {d.label} ↗
-                      </span>
-                    </a>
-                  ))}
-                </div>
-              </div>
             )}
 
-            {/* Success proof (completed campaigns) */}
-            {(item.successPhotoUrl || item.successNote) && (
-              <div>
-                <p className={cn('text-xs font-semibold mb-2', isDark ? 'text-slate-400' : 'text-gray-500')}>Success Proof</p>
-                {item.successPhotoUrl && (
-                  <a href={item.successPhotoUrl} target="_blank" rel="noopener noreferrer">
-                    <img src={item.successPhotoUrl} alt="Success proof" className="rounded-xl max-h-64 object-contain w-full border cursor-pointer hover:opacity-90 transition-opacity" />
-                  </a>
-                )}
-                {item.successNote && (
-                  <p className={cn('mt-2 rounded-xl p-3 text-xs whitespace-pre-wrap leading-relaxed', isDark ? 'bg-slate-800 text-slate-300' : 'bg-white border text-gray-700')}>
-                    {item.successNote}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                <div>
+                  <h4 className={cn('text-[10px] font-bold uppercase tracking-widest mb-2', isDark ? 'text-slate-500' : 'text-gray-400')}>Description</h4>
+                  <p className={cn('text-sm leading-relaxed whitespace-pre-wrap', isDark ? 'text-slate-300' : 'text-gray-700')}>
+                    {item.description}
                   </p>
+                </div>
+
+                {item.imageUrl && (
+                  <div>
+                    <h4 className={cn('text-[10px] font-bold uppercase tracking-widest mb-2', isDark ? 'text-slate-500' : 'text-gray-400')}>{t('admin.request_photo')}</h4>
+                    <a href={item.imageUrl} target="_blank" rel="noopener noreferrer" className="block rounded-xl overflow-hidden border border-gray-200 dark:border-slate-700 group relative">
+                      <img src={item.imageUrl} alt="Request" className="w-full max-h-64 object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                        <span className="opacity-0 group-hover:opacity-100 bg-white/90 text-black text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-1 transition-opacity">
+                          <ExternalLink className="w-3 h-3" /> View Full Image
+                        </span>
+                      </div>
+                    </a>
+                  </div>
+                )}
+                
+                {item.supportLetterUrl && (
+                  <div>
+                    <h4 className={cn('text-[10px] font-bold uppercase tracking-widest mb-2', isDark ? 'text-slate-500' : 'text-gray-400')}>Documents</h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {[
+                        { label: t('admin.support_letter'), url: item.supportLetterUrl },
+                        { label: 'Beneficiary Front ID', url: item.beneficiaryFrontIdUrl },
+                        { label: 'Beneficiary Back ID', url: item.beneficiaryBackIdUrl },
+                      ].filter(d => d.url).map(d => (
+                        <a key={d.label} href={d.url} target="_blank" rel="noopener noreferrer"
+                          className={cn('rounded-xl overflow-hidden border group relative block',
+                            isDark ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white')}>
+                          <img src={d.url} alt={d.label}
+                            className="w-full h-24 object-cover group-hover:opacity-80 transition-opacity"
+                            onError={e => (e.currentTarget.style.display = 'none')} />
+                          <div className={cn('px-2 py-1.5 border-t text-[10px] font-semibold truncate', isDark ? 'border-slate-700 text-slate-300' : 'border-gray-100 text-gray-700')}>
+                            {d.label} ↗
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
-            )}
 
-            {/* FAN + additional notes */}
-            <div className={cn('rounded-xl p-4 space-y-2', isDark ? 'bg-slate-800' : 'bg-white border')}>
-              <DetailRow label="FAN Number" value={item.fanNumber} isDark={isDark} />
-              <DetailRow label={t('admin.additional_notes')} value={item.additionalNotes} isDark={isDark} />
-            </div>
+              <div className="space-y-4">
+                {item.goalAmount && (
+                  <div className={cn('rounded-xl p-4 border', isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200')}>
+                    <div className="flex justify-between items-baseline mb-2">
+                      <span className="text-xl font-extrabold text-[var(--color-civic-emerald)]">{formatCurrency(item.raisedAmount || 0)}</span>
+                      <span className={cn('text-xs font-medium', isDark ? 'text-slate-400' : 'text-gray-500')}>of {formatCurrency(item.goalAmount)}</span>
+                    </div>
+                    <div className={cn('h-2 rounded-full overflow-hidden', isDark ? 'bg-slate-700' : 'bg-gray-100')}>
+                      <div className="h-full bg-[var(--color-civic-emerald)] rounded-full transition-all"
+                        style={{ width: `${Math.min(((item.raisedAmount || 0) / item.goalAmount) * 100, 100)}%` }} />
+                    </div>
+                  </div>
+                )}
 
-            {/* Payment accounts */}
-            <div>
-              <p className={cn('text-xs font-semibold mb-2', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.payment_accounts')}</p>
-              <AccountInfo data={item} isDark={isDark} />
-            </div>
+                <div className={cn('rounded-xl border divide-y', isDark ? 'bg-slate-800 border-slate-700 divide-slate-700' : 'bg-white border-gray-200 divide-gray-100')}>
+                  <div className="p-3">
+                    <h4 className={cn('text-[10px] font-bold uppercase tracking-widest mb-2', isDark ? 'text-slate-500' : 'text-gray-400')}>
+                      {item.user ? 'Requester' : 'Assisted Beneficiary'}
+                    </h4>
+                    {item.user ? (
+                      <div className="text-xs space-y-1">
+                        <p className={isDark ? 'text-slate-300' : 'text-gray-700'}><span className={isDark ? 'text-slate-500' : 'text-gray-400'}>Email:</span> {item.user.email}</p>
+                        <p className={isDark ? 'text-slate-300' : 'text-gray-700'}><span className={isDark ? 'text-slate-500' : 'text-gray-400'}>Phone:</span> {item.user.phone}</p>
+                      </div>
+                    ) : (
+                      <div className="text-xs space-y-1">
+                        <p className={isDark ? 'text-slate-300' : 'text-gray-700'}><span className={isDark ? 'text-slate-500' : 'text-gray-400'}>ID:</span> {item.beneficiaryIdType?.replace(/_/g, ' ')} {item.beneficiaryIdNum}</p>
+                        <p className={isDark ? 'text-slate-300' : 'text-gray-700'}><span className={isDark ? 'text-slate-500' : 'text-gray-400'}>Phone:</span> {item.beneficiaryPhone || 'N/A'}</p>
+                      </div>
+                    )}
+                  </div>
 
-            {item.adminNote && (
-              <div className={cn('text-xs px-3 py-2 rounded-lg', isDark ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-50 text-blue-700')}>
-                <span className="font-semibold">Admin note: </span>{item.adminNote}
+                  <div className="p-3">
+                     <h4 className={cn('text-[10px] font-bold uppercase tracking-widest mb-2', isDark ? 'text-slate-500' : 'text-gray-400')}>Details</h4>
+                     <div className="text-xs space-y-1">
+                       {item.familySize && <p className={isDark ? 'text-slate-300' : 'text-gray-700'}><span className={isDark ? 'text-slate-500' : 'text-gray-400'}>Family Size:</span> {item.familySize} people</p>}
+                       {type === 'campaigns' && item.deadline && <p className={isDark ? 'text-slate-300' : 'text-gray-700'}><span className={isDark ? 'text-slate-500' : 'text-gray-400'}>Deadline:</span> {formatDate(item.deadline)}</p>}
+                       {item.fanNumber && <p className={isDark ? 'text-slate-300' : 'text-gray-700'}><span className={isDark ? 'text-slate-500' : 'text-gray-400'}>FAN:</span> {item.fanNumber}</p>}
+                     </div>
+                  </div>
+
+                  <div className="p-3">
+                    <h4 className={cn('text-[10px] font-bold uppercase tracking-widest mb-2', isDark ? 'text-slate-500' : 'text-gray-400')}>Payment Accounts</h4>
+                    <AccountInfo data={item} isDark={isDark} />
+                  </div>
+                </div>
+
+                {item.adminNote && (
+                  <div className={cn('text-xs px-3 py-2.5 rounded-lg border', isDark ? 'bg-blue-900/10 text-blue-300 border-blue-900/30' : 'bg-blue-50 text-blue-800 border-blue-100')}>
+                    <span className="font-bold block mb-0.5 tracking-wide uppercase text-[10px] opacity-70">Admin Note</span>
+                    {item.adminNote}
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         )}
-      </Card>
+      </div>
     );
   };
-
   const currentItems = view === 'requests' ? filterItems(requests || []) : filterItems(campaigns || []);
 
   return (
@@ -747,7 +695,7 @@ export default function AdminRequestsPage() {
           <button key={s} onClick={() => setStatusFilter(s)}
             className={cn('px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
               statusFilter === s
-                ? 'bg-green-700 text-white'
+                ? 'bg-[var(--color-civic-emerald)] text-white'
                 : (isDark ? 'bg-slate-700 text-slate-400 hover:text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-800'))}>
             {s}
           </button>
@@ -757,28 +705,28 @@ export default function AdminRequestsPage() {
       {view === 'requests' && (
         loadingReqs ? (
           <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : !currentItems.length ? (
           <Card className={cn('text-center py-16', isDark ? 'text-slate-400' : 'text-gray-400')}>{t('admin.no_support_requests')}</Card>
         ) : (
-          <div className="space-y-4">
+          <Card padding="none" className="divide-y overflow-hidden shadow-sm">
             {currentItems.map((req: any) => <ItemCard key={req.id} item={req} type="requests" />)}
-          </div>
+          </Card>
         )
       )}
 
       {view === 'campaigns' && (
         loadingCamps ? (
           <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : !currentItems.length ? (
           <Card className={cn('text-center py-16', isDark ? 'text-slate-400' : 'text-gray-400')}>{t('admin.no_campaigns')}</Card>
         ) : (
-          <div className="space-y-4">
+          <Card padding="none" className="divide-y overflow-hidden shadow-sm">
             {currentItems.map((camp: any) => <ItemCard key={camp.id} item={camp} type="campaigns" />)}
-          </div>
+          </Card>
         )
       )}
     </div>

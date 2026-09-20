@@ -239,12 +239,12 @@ export default function IndividualVerificationPage() {
         <div className={cn('flex gap-1 p-1 rounded-xl', isDark ? 'bg-slate-800' : 'bg-gray-100')}>
           <button onClick={() => setTab('pending')}
             className={cn('px-4 py-2 rounded-lg text-sm font-semibold transition-all',
-              tab === 'pending' ? 'bg-amber-500 text-white shadow' : (isDark ? 'text-slate-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'))}>
+              tab === 'pending' ? 'bg-amber-600 text-white shadow' : (isDark ? 'text-slate-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'))}>
             Pending ({pendingDisplay.length})
           </button>
           <button onClick={() => setTab('approved')}
             className={cn('px-4 py-2 rounded-lg text-sm font-semibold transition-all',
-              tab === 'approved' ? 'bg-green-700 text-white shadow' : (isDark ? 'text-slate-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'))}>
+              tab === 'approved' ? 'bg-[var(--color-civic-emerald)] text-white shadow' : (isDark ? 'text-slate-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'))}>
             Approved ({approvedUsers.length})
           </button>
           <button onClick={() => setTab('rejected')}
@@ -262,26 +262,26 @@ export default function IndividualVerificationPage() {
       {/* Content */}
       {isLoading ? (
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !displayList.length ? (
-        <Card className={cn('text-center py-16', isDark ? 'text-slate-400' : 'text-gray-400')}>
-          <User className={cn('w-12 h-12 mx-auto mb-3', isDark ? 'text-slate-600' : 'text-gray-200')} />
-          <p className="font-medium">
+        <div className={cn('text-center py-20 border-2 border-dashed rounded-2xl', isDark ? 'border-slate-800 text-slate-500' : 'border-gray-200 text-gray-400')}>
+          <User className={cn('w-12 h-12 mx-auto mb-3 opacity-50', isDark ? 'text-slate-600' : 'text-gray-300')} />
+          <p className="font-medium text-sm">
             {tab === 'pending' ? 'No pending verifications' : tab === 'approved' ? 'No approved verifications yet' : 'No rejected verifications'}
           </p>
-        </Card>
+        </div>
       ) : (
-        <div className="space-y-4">
+        <Card padding="none" className="divide-y overflow-hidden shadow-sm">
           {displayList.map((user: any) => (
-            <Card key={user.id} className="p-5">
+            <div key={user.id} className={cn('p-5 transition-colors', isDark ? 'hover:bg-slate-800/30' : 'hover:bg-gray-50/50')}>
               <div className="flex items-start gap-4">
-                <div className={cn('w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-sm shrink-0',
-                  tab === 'approved' && (isDark ? 'bg-green-900/40 text-green-400' : 'bg-green-100 text-green-700'),
+                <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-sm shrink-0',
+                  tab === 'approved' && (isDark ? 'bg-emerald-900/40 text-emerald-400' : 'bg-emerald-100 text-emerald-700'),
                   tab === 'rejected' && (isDark ? 'bg-red-900/40 text-red-400' : 'bg-red-100 text-red-700'),
                   tab === 'pending' && (isDark ? 'bg-amber-900/40 text-amber-400' : 'bg-amber-100 text-amber-700'),
                 )}>
-                  <User className="w-6 h-6" />
+                  <User className="w-5 h-5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -294,64 +294,65 @@ export default function IndividualVerificationPage() {
                   </div>
 
                   {/* User Details Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-1.5 gap-x-4 mt-2">
                     {user.email && (
                       <div className="flex items-center gap-1.5 text-xs">
-                        <span className={cn('font-mono', isDark ? 'text-slate-400' : 'text-gray-500')}>{user.email}</span>
+                        <span className={cn('font-mono font-medium', isDark ? 'text-slate-400' : 'text-gray-600')}>{user.email}</span>
                       </div>
                     )}
                     {user.phone && (
                       <div className="flex items-center gap-1.5 text-xs">
                         <Phone className={cn('w-3.5 h-3.5', isDark ? 'text-slate-500' : 'text-gray-400')} />
-                        <span className={isDark ? 'text-slate-400' : 'text-gray-500'}>{user.phone}</span>
+                        <span className={cn('font-medium', isDark ? 'text-slate-400' : 'text-gray-600')}>{user.phone}</span>
                       </div>
                     )}
                     {user.fanNumber && (
                       <div className="flex items-center gap-1.5 text-xs">
                         <Hash className={cn('w-3.5 h-3.5', isDark ? 'text-slate-500' : 'text-gray-400')} />
-                        <span className={isDark ? 'text-slate-400' : 'text-gray-500'}>FAN: {user.fanNumber}</span>
+                        <span className={cn('font-medium', isDark ? 'text-slate-400' : 'text-gray-600')}>FAN: {user.fanNumber}</span>
                       </div>
                     )}
                   </div>
 
                   {/* Rejection reason */}
                   {tab === 'rejected' && user.rejectionReason && (
-                    <div className={cn('mt-3 p-2 rounded-lg text-xs', isDark ? 'bg-red-900/20 text-red-400' : 'bg-red-50 text-red-600')}>
+                    <div className={cn('mt-3 p-2 rounded-lg text-xs font-medium', isDark ? 'bg-red-900/20 text-red-400' : 'bg-red-50 text-red-600')}>
                       Rejection reason: {user.rejectionReason}
                     </div>
                   )}
 
-                  <p className={cn('text-[10px] mt-2', isDark ? 'text-slate-600' : 'text-gray-400')}>
-                    Requested {formatDate(user.createdAt)}
-                  </p>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 mt-3 flex-wrap">
-                    <button onClick={() => setViewingUser(user)}
-                      className={cn('flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors',
-                        isDark ? 'text-blue-400 hover:text-blue-300 bg-blue-900/30 hover:bg-blue-900/50' : 'text-blue-700 hover:text-blue-800 bg-blue-50 hover:bg-blue-100')}>
-                      <Eye className="w-3.5 h-3.5" /> View Identity Docs
-                    </button>
-                    {tab === 'pending' && (
-                      <>
-                        <Button size="sm"
-                          leftIcon={<BadgeCheck className="w-3.5 h-3.5" />}
-                          onClick={() => approveUserMutation.mutate(user.id)}
-                          isLoading={approveUserMutation.isPending}>
-                          Approve
-                        </Button>
-                        <Button size="sm" variant="danger"
-                          onClick={() => { setRejectModal({ userId: user.id, name: `${user.firstName} ${user.lastName}` }); setRejectReason(''); }}>
-                          Reject
-                        </Button>
-                      </>
-                    )}
+                  <div className="flex items-center justify-between mt-3 flex-wrap gap-3">
+                    <p className={cn('text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-500' : 'text-gray-400')}>
+                      Requested {formatDate(user.createdAt)}
+                    </p>
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <button onClick={() => setViewingUser(user)}
+                        className={cn('flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors',
+                          isDark ? 'text-[var(--color-civic-emerald)] hover:text-emerald-400 bg-emerald-900/20 hover:bg-emerald-900/40' : 'text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100')}>
+                        <Eye className="w-3.5 h-3.5" /> View Identity Docs
+                      </button>
+                      {tab === 'pending' && (
+                        <>
+                          <Button size="sm"
+                            leftIcon={<BadgeCheck className="w-3.5 h-3.5" />}
+                            onClick={() => approveUserMutation.mutate(user.id)}
+                            isLoading={approveUserMutation.isPending}>
+                            Approve
+                          </Button>
+                          <Button size="sm" variant="danger"
+                            onClick={() => { setRejectModal({ userId: user.id, name: `${user.firstName} ${user.lastName}` }); setRejectReason(''); }}>
+                            Reject
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </Card>
+            </div>
           ))}
-        </div>
+        </Card>
       )}
 
       {/* ── User Detail Modal ── */}

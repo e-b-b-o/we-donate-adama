@@ -66,11 +66,11 @@ export default function AdminDonationsPage() {
         </div>
         <div className="flex items-center gap-3">
           <div className={cn('flex items-center gap-2 rounded-2xl px-5 py-3',
-            isDark ? 'bg-green-900/30 border border-green-800' : 'bg-green-50 border border-green-100')}>
-            <TrendingUp className="w-5 h-5 text-green-600" />
+            isDark ? 'bg-emerald-900/20 border border-emerald-900/50' : 'bg-emerald-50 border border-green-100')}>
+            <TrendingUp className="w-5 h-5 text-[var(--color-civic-emerald)]" />
             <div>
               <p className={cn('text-xs', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.total_raised_label')}</p>
-              <p className="text-lg font-extrabold text-green-700">{formatCurrency(total)}</p>
+              <p className="text-lg font-extrabold text-[var(--color-civic-emerald)]">{formatCurrency(total)}</p>
             </div>
           </div>
           <Button variant="outline" size="sm" leftIcon={<Download className="w-4 h-4" />} onClick={exportCSV}>
@@ -85,7 +85,7 @@ export default function AdminDonationsPage() {
           <button key={s} onClick={() => setStatusTab(s)}
             className={cn('px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
               statusTab === s
-                ? 'bg-green-700 text-white'
+                ? 'bg-[var(--color-civic-emerald)] text-white'
                 : (isDark ? 'bg-slate-700 text-slate-400 hover:text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-800'))}>
             {s}
           </button>
@@ -114,7 +114,7 @@ export default function AdminDonationsPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center h-48">
-          <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !donations?.length ? (
         <Card className="text-center py-16">
@@ -125,29 +125,29 @@ export default function AdminDonationsPage() {
         <Card padding="none" className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className={cn('border-b', isDark ? 'bg-slate-700/50 border-slate-700' : 'bg-gray-50 border-gray-100')}>
+              <thead className={cn('border-b', isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-gray-50/80 border-gray-100')}>
                 <tr>
-                  <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>{t('admin.donor')}</th>
-                  <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>Target</th>
-                  <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>{t('admin.amount')}</th>
-                  <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>{t('admin.type')}</th>
-                  <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>Method</th>
-                  <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>Ref Code</th>
-                  <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>{t('admin.date')}</th>
-                  <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>{t('admin.status')}</th>
-                  <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>Actions</th>
+                  <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.donor')}</th>
+                  <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>Target</th>
+                  <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.amount')}</th>
+                  <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.type')}</th>
+                  <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>Method</th>
+                  <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>Ref Code</th>
+                  <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.date')}</th>
+                  <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>{t('admin.status')}</th>
+                  <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>Actions</th>
                 </tr>
               </thead>
               <tbody className={cn('divide-y', isDark ? 'divide-slate-700' : 'divide-gray-50')}>
                 {donations.map((d: any) => (
-                  <tr key={d.id} className={cn('transition-colors', isDark ? 'hover:bg-slate-700/40' : 'hover:bg-gray-50')}>
+                  <tr key={d.id} className={cn('transition-colors', isDark ? 'hover:bg-slate-800/30' : 'hover:bg-gray-50/50')}>
                     <td className={cn('px-5 py-3.5 font-medium', isDark ? 'text-white' : 'text-gray-800')}>
                       {d.isAnonymous ? (
                         <span className={cn('italic', isDark ? 'text-slate-500' : 'text-gray-400')}>{t('admin.anonymous')}</span>
                       ) : (
                         <div className="flex items-center gap-2">
                           <div className={cn('w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold',
-                            isDark ? 'bg-green-900/40 text-green-400' : 'bg-green-100 text-green-700')}>
+                            isDark ? 'bg-emerald-900/20 text-emerald-400' : 'bg-emerald-100 text-[var(--color-civic-emerald)]')}>
                             {d.donor?.firstName?.[0]}
                           </div>
                           {d.donor?.firstName ?? ''} {d.donor?.lastName ?? ''}
@@ -169,7 +169,7 @@ export default function AdminDonationsPage() {
                         <span className={cn('text-xs italic', isDark ? 'text-slate-500' : 'text-gray-400')}>General</span>
                       )}
                     </td>
-                    <td className={cn('px-5 py-3.5 font-bold text-green-700')}>{d.amount ? formatCurrency(d.amount) : '—'}</td>
+                    <td className={cn('px-5 py-3.5 font-bold text-[var(--color-civic-emerald)]')}>{d.amount ? formatCurrency(d.amount) : '—'}</td>
                     <td className={cn('px-5 py-3.5', isDark ? 'text-slate-300' : 'text-gray-600')}>{d.donationType}</td>
                     <td className={cn('px-5 py-3.5 text-xs', isDark ? 'text-slate-400' : 'text-gray-500')}>{d.paymentMethod || 'N/A'}</td>
                     <td className={cn('px-5 py-3.5 font-mono text-xs', isDark ? 'text-slate-400' : 'text-gray-500')}>{d.referenceCode || d.chapaRef || '—'}</td>
@@ -180,7 +180,7 @@ export default function AdminDonationsPage() {
                         {d.paymentStatus !== 'SUCCESS' && (
                           <button onClick={() => verifyDonation.mutate(d.id)}
                             className={cn('flex items-center justify-center w-8 h-8 rounded-lg transition-colors',
-                              isDark ? 'bg-green-900/30 text-green-400 hover:bg-green-900/50' : 'bg-green-50 text-green-600 hover:bg-green-100')}
+                              isDark ? 'bg-emerald-900/20 text-emerald-400 hover:bg-emerald-900/40' : 'bg-emerald-50 text-[var(--color-civic-emerald)] hover:bg-emerald-100')}
                             title="Approve">
                             <span className="text-lg font-bold">✓</span>
                           </button>
@@ -198,7 +198,7 @@ export default function AdminDonationsPage() {
                         <p className={cn('text-[10px] mt-1', isDark ? 'text-red-400' : 'text-red-500')}>{d.rejectionReason}</p>
                       )}
                       {d.paymentStatus === 'SUCCESS' && d.verifiedAt && (
-                        <p className={cn('text-[10px] mt-1', isDark ? 'text-green-400' : 'text-green-600')}>Verified {formatDate(d.verifiedAt)}</p>
+                        <p className={cn('text-[10px] mt-1', isDark ? 'text-emerald-400' : 'text-[var(--color-civic-emerald)]')}>Verified {formatDate(d.verifiedAt)}</p>
                       )}
                     </td>
                   </tr>

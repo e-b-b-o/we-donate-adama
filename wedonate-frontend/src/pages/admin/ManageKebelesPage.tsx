@@ -73,25 +73,25 @@ export default function ManageKebelesPage() {
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className={cn('border-b', isDark ? 'border-slate-700 bg-slate-800/50 text-slate-300' : 'border-gray-200 bg-gray-50 text-gray-600')}>
+            <thead className={cn('border-b', isDark ? 'border-slate-700 bg-slate-800/80 text-slate-400' : 'border-gray-200 bg-gray-50/80 text-gray-500')}>
               <tr>
-                <th className="px-6 py-4 font-semibold">Kebele Name</th>
-                <th className="px-6 py-4 font-semibold">Status</th>
-                <th className="px-6 py-4 font-semibold">Users Count</th>
-                <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                <th className="px-6 py-4 text-[10px] uppercase font-bold tracking-wider">Kebele Name</th>
+                <th className="px-6 py-4 text-[10px] uppercase font-bold tracking-wider">Status</th>
+                <th className="px-6 py-4 text-[10px] uppercase font-bold tracking-wider">Users Count</th>
+                <th className="px-6 py-4 text-[10px] uppercase font-bold tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className={cn('divide-y', isDark ? 'divide-slate-700' : 'divide-gray-200')}>
               {isLoading ? (
                 <tr><td colSpan={4} className="text-center py-8">Loading...</td></tr>
               ) : kebeles.map((k: any) => (
-                <tr key={k.id} className={cn('transition-colors', isDark ? 'hover:bg-slate-800/50' : 'hover:bg-gray-50')}>
+                <tr key={k.id} className={cn('transition-colors', isDark ? 'hover:bg-slate-800/30' : 'hover:bg-gray-50/50')}>
                   <td className="px-6 py-4 font-medium flex items-center gap-2">
                     <MapPin className={cn('w-4 h-4', isDark ? 'text-slate-400' : 'text-gray-400')} />
                     <span className={isDark ? 'text-slate-200' : 'text-gray-900'}>{k.name}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={cn('px-2.5 py-1 rounded-full text-xs font-semibold', k.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')}>
+                    <span className={cn('px-2.5 py-1 rounded-full text-xs font-semibold', k.status === 'ACTIVE' ? 'bg-emerald-100 text-[var(--color-civic-emerald)]' : 'bg-red-100 text-red-700')}>
                       {k.status}
                     </span>
                   </td>
@@ -120,12 +120,12 @@ export default function ManageKebelesPage() {
               <div>
                 <label className={cn('block text-sm font-medium mb-1.5', isDark ? 'text-slate-300' : 'text-gray-700')}>Kebele Name *</label>
                 <input required value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Kebele 01"
-                  className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500', isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900')} />
+                  className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]', isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900')} />
               </div>
               <div>
                 <label className={cn('block text-sm font-medium mb-1.5', isDark ? 'text-slate-300' : 'text-gray-700')}>Status</label>
                 <select value={status} onChange={e => setStatus(e.target.value)}
-                  className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500', isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900')}>
+                  className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]', isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900')}>
                   <option value="ACTIVE">ACTIVE</option>
                   <option value="INACTIVE">INACTIVE</option>
                 </select>

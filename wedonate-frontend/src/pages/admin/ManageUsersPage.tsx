@@ -25,7 +25,7 @@ const ROLE_DESCRIPTIONS: Record<string, string> = {
 const ORG_STATUS_INFO: Record<string, { label: string; color: string }> = {
   NONE: { label: 'Not an Organization', color: 'bg-gray-100 text-gray-600' },
   PENDING: { label: 'Verification Pending', color: 'bg-amber-100 text-amber-700' },
-  APPROVED: { label: 'Verified Organization', color: 'bg-green-100 text-green-700' },
+  APPROVED: { label: 'Verified Organization', color: 'bg-emerald-100 text-[var(--color-civic-emerald)]' },
   REJECTED: { label: 'Verification Rejected', color: 'bg-red-100 text-red-700' },
 };
 
@@ -69,7 +69,7 @@ function UserDetailModal({ user, isOpen, onClose, isDark }: { user: any; isOpen:
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {user.profileImage ? (
-                <img src={user.profileImage} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-green-200" />
+                <img src={user.profileImage} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-emerald-200" />
               ) : (
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-xl font-bold">
                   {user.firstName?.[0]}{user.lastName?.[0]}
@@ -105,7 +105,7 @@ function UserDetailModal({ user, isOpen, onClose, isDark }: { user: any; isOpen:
           {/* Role Description */}
           <div className={cn('rounded-xl p-4', isDark ? 'bg-slate-700/50' : 'bg-gray-50')}>
             <div className="flex items-center gap-2 mb-1">
-              <Shield className={cn('w-4 h-4', isDark ? 'text-green-400' : 'text-green-600')} />
+              <Shield className={cn('w-4 h-4', isDark ? 'text-emerald-400' : 'text-[var(--color-civic-emerald)]')} />
               <p className={cn('text-xs font-bold', isDark ? 'text-slate-300' : 'text-gray-700')}>Role Description</p>
             </div>
             <p className={cn('text-xs leading-relaxed', isDark ? 'text-slate-400' : 'text-gray-500')}>
@@ -341,7 +341,7 @@ export default function ManageUsersPage() {
             value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)}
-          className={cn('rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 min-w-[160px]',
+          className={cn('rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)] min-w-[160px]',
             isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')}>
           <option value="">{t('admin.all_roles')}</option>
           {ALL_ROLES.map(r => <option key={r} value={r}>{r.replace('_', ' ')}</option>)}
@@ -377,7 +377,7 @@ export default function ManageUsersPage() {
                   </div>
                 ) : (
                   <select value={createForm.role} onChange={e => setCreateForm(p => ({ ...p, role: e.target.value }))}
-                    className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500',
+                    className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                       isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')}>
                     {ALL_ROLES.map(r => <option key={r} value={r}>{r.replace('_', ' ')}</option>)}
                   </select>
@@ -387,7 +387,7 @@ export default function ManageUsersPage() {
                 <div>
                   <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>Assign Kebele</label>
                   <select value={createForm.kebeleId} onChange={e => setCreateForm(p => ({ ...p, kebeleId: e.target.value }))}
-                    className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500',
+                    className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                       isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')}>
                     <option value="">-- Select active Kebele --</option>
                     {kebeles.map((k: any) => <option key={k.id} value={k.id}>{k.name}</option>)}
@@ -410,7 +410,7 @@ export default function ManageUsersPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center h-48">
-          <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <Card padding="none" className="overflow-hidden">
@@ -435,7 +435,7 @@ export default function ManageUsersPage() {
                           <img src={u.profileImage} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
                         ) : (
                           <div className={cn('w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0',
-                            isDark ? 'bg-green-900/40 text-green-400' : 'bg-green-100 text-green-700')}>
+                            isDark ? 'bg-green-900/40 text-emerald-400' : 'bg-emerald-100 text-[var(--color-civic-emerald)]')}>
                             {u.firstName[0]}{u.lastName[0]}
                           </div>
                         )}
@@ -453,7 +453,7 @@ export default function ManageUsersPage() {
                         <select autoFocus defaultValue={u.role}
                           onChange={e => assignRole.mutate({ userId: u.id, role: e.target.value })}
                           onBlur={() => setAssigningUser(null)}
-                          className={cn('rounded-lg border px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-green-500',
+                          className={cn('rounded-lg border px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                             isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')}>
                           {ALL_ROLES.map(r => <option key={r} value={r}>{r.replace('_',' ')}</option>)}
                         </select>
@@ -469,7 +469,7 @@ export default function ManageUsersPage() {
                             <select autoFocus defaultValue={u.kebeleId || ''}
                               onChange={e => assignKebele.mutate({ userId: u.id, kebeleId: e.target.value })}
                               onBlur={() => setAssigningKebeleUser(null)}
-                              className={cn('mt-1 rounded-lg border px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-green-500',
+                              className={cn('mt-1 rounded-lg border px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                                 isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')}>
                               <option value="">-- No Kebele --</option>
                               {kebeles.map((k: any) => <option key={k.id} value={k.id}>{k.name}</option>)}
@@ -504,7 +504,7 @@ export default function ManageUsersPage() {
                         {canAssignRole && (
                           <button onClick={() => setAssigningUser(u.id)}
                             className={cn('flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors',
-                              isDark ? 'text-green-400 hover:text-green-300 bg-green-900/30 hover:bg-green-900/50' : 'text-green-700 hover:text-green-800 bg-green-50 hover:bg-green-100')}>
+                              isDark ? 'text-emerald-400 hover:text-green-300 bg-green-900/30 hover:bg-green-900/50' : 'text-[var(--color-civic-emerald)] hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100')}>
                             <UserCog className="w-3.5 h-3.5" /> {t('admin.assign_role')}
                           </button>
                         )}
