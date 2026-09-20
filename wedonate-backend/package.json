@@ -12,8 +12,7 @@
     "db:seed": "tsx src/seed.ts",
     "db:studio": "prisma studio",
     "chatbot:ingest": "tsx src/ingest.ts",
-    "test": "jest",
-    "postinstall": "prisma generate"
+    "test": "jest"
   },
   "dependencies": {
     "@google/genai": "^2.18.0",
