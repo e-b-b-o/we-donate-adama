@@ -42,7 +42,7 @@ export default function AdminGalleryPage() {
   });
 
   const inp = cn(
-    'w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500',
+    'w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
     isDark ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' : 'bg-white border-gray-300 text-gray-900',
   );
   const lbl = cn('block text-sm font-medium mb-1.5', isDark ? 'text-slate-300' : 'text-gray-700');
@@ -139,7 +139,7 @@ export default function AdminGalleryPage() {
       {/* ── Gallery Grid ── */}
       {isLoading ? (
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !photos?.length ? (
         <Card className="text-center py-16">

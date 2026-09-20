@@ -73,13 +73,13 @@ export default function AdminMessagesPage() {
       <div className={cn('flex gap-1 p-1 rounded-xl', isDark ? 'bg-slate-800' : 'bg-gray-100')}>
         <button onClick={() => setTab('inbox')}
           className={cn('flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all',
-            tab === 'inbox' ? 'bg-green-700 text-white shadow' : (isDark ? 'text-slate-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'))}>
+            tab === 'inbox' ? 'bg-[var(--color-civic-emerald)] text-white shadow' : (isDark ? 'text-slate-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'))}>
           <Inbox className="w-4 h-4" /> Inbox
           {unreadCount > 0 && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{unreadCount}</span>}
         </button>
         <button onClick={() => setTab('compose')}
           className={cn('flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all',
-            tab === 'compose' ? 'bg-green-700 text-white shadow' : (isDark ? 'text-slate-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'))}>
+            tab === 'compose' ? 'bg-[var(--color-civic-emerald)] text-white shadow' : (isDark ? 'text-slate-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'))}>
           <Send className="w-4 h-4" /> Compose
         </button>
       </div>
@@ -91,12 +91,12 @@ export default function AdminMessagesPage() {
             <Card className="p-6">
               <button onClick={() => setViewMessage(null)}
                 className={cn('flex items-center gap-1.5 text-sm font-medium mb-4 transition-colors',
-                  isDark ? 'text-green-400 hover:text-green-300' : 'text-green-700 hover:text-green-600')}>
+                  isDark ? 'text-emerald-400 hover:text-green-300' : 'text-[var(--color-civic-emerald)] hover:text-[var(--color-civic-emerald)]')}>
                 <ArrowLeft className="w-4 h-4" /> Back to inbox
               </button>
               <div className="flex items-start gap-3 mb-4">
                 <div className={cn('w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
-                  isDark ? 'bg-green-900/40 text-green-400' : 'bg-green-100 text-green-700')}>
+                  isDark ? 'bg-emerald-900/40 text-emerald-400' : 'bg-emerald-100 text-[var(--color-civic-emerald)]')}>
                   {viewMessage.sender?.firstName?.[0]}{viewMessage.sender?.lastName?.[0]}
                 </div>
                 <div className="flex-1">
@@ -124,7 +124,7 @@ export default function AdminMessagesPage() {
                 <button onClick={() => setInboxFilter('all')}
                   className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
                     inboxFilter === 'all'
-                      ? 'bg-green-700 text-white'
+                      ? 'bg-[var(--color-civic-emerald)] text-white'
                       : (isDark ? 'bg-slate-700 text-slate-400 hover:text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-800'))}>
                   <Inbox className="w-3.5 h-3.5" /> Regular ({regularMessages.length})
                 </button>
@@ -138,7 +138,7 @@ export default function AdminMessagesPage() {
               </div>
 
               {isLoading ? (
-                <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" /></div>
+                <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" /></div>
               ) : !displayedMessages?.length ? (
                 <Card className={cn('text-center py-16', isDark ? 'text-slate-400' : 'text-gray-400')}>
                   <Mail className={cn('w-12 h-12 mx-auto mb-3', isDark ? 'text-slate-600' : 'text-gray-200')} />
@@ -156,7 +156,7 @@ export default function AdminMessagesPage() {
                       : null;
                     const iconBg = isContact
                       ? (isDark ? 'bg-amber-900/40 text-amber-400' : 'bg-amber-100 text-amber-700')
-                      : (isDark ? 'bg-green-900/40 text-green-400' : 'bg-green-100 text-green-700');
+                      : (isDark ? 'bg-emerald-900/40 text-emerald-400' : 'bg-emerald-100 text-[var(--color-civic-emerald)]');
                     return (
                       <div key={m.id} className="cursor-pointer" onClick={() => { if (!m.isRead) markRead.mutate(m.id); setViewMessage(m); }}>
                         <Card className={cn('p-4 transition-colors',
@@ -207,7 +207,7 @@ export default function AdminMessagesPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-3 mb-2">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={isBroadcast} onChange={e => setIsBroadcast(e.target.checked)} className="w-4 h-4 text-green-600 rounded" />
+                <input type="checkbox" checked={isBroadcast} onChange={e => setIsBroadcast(e.target.checked)} className="w-4 h-4 text-[var(--color-civic-emerald)] rounded" />
                 <span className={cn('text-sm font-medium flex items-center gap-1', isDark ? 'text-slate-300' : 'text-gray-700')}>
                   <Users className="w-3.5 h-3.5" /> Broadcast to all users
                 </span>
@@ -217,7 +217,7 @@ export default function AdminMessagesPage() {
               <div>
                 <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>Recipient *</label>
                 <select value={form.recipientId} onChange={e => setForm(p => ({ ...p, recipientId: e.target.value }))}
-                  className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500',
+                  className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                     isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')}>
                   <option value="">Select recipient...</option>
                   {users?.map((u: any) => (
@@ -230,7 +230,7 @@ export default function AdminMessagesPage() {
             <div>
               <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>Message *</label>
               <textarea value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} rows={6}
-                className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500',
+                className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                   isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-200')} />
             </div>
             <Button leftIcon={<Send className="w-4 h-4" />} onClick={handleSend}
