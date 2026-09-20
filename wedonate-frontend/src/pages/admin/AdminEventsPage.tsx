@@ -73,7 +73,7 @@ export default function AdminEventsPage() {
         {(['ALL','DRAFT','PUBLISHED','CANCELLED'] as EventStatusFilter[]).map(s => (
           <button key={s} onClick={() => setStatusFilter(s)}
             className={cn('px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
-              statusFilter === s ? 'bg-green-700 text-white'
+              statusFilter === s ? 'bg-[var(--color-civic-emerald)] text-white'
                 : (isDark ? 'bg-slate-700 text-slate-400 hover:text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-800'))}>
             {s}
           </button>
@@ -91,7 +91,7 @@ export default function AdminEventsPage() {
             <div>
               <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>Description *</label>
               <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={4}
-                className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500',
+                className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                   isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-200')} />
             </div>
             <Input label="Location (optional)" value={form.location} onChange={e => setForm(p => ({ ...p, location: e.target.value }))} />
@@ -103,7 +103,7 @@ export default function AdminEventsPage() {
             <div>
               <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>Status</label>
               <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}
-                className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500',
+                className={cn('w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                   isDark ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300')}>
                 <option value="DRAFT">Draft</option>
                 <option value="PUBLISHED">Published</option>
@@ -119,7 +119,7 @@ export default function AdminEventsPage() {
       )}
 
       {isLoading ? (
-        <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" /></div>
       ) : !events?.length ? (
         <Card className={cn('text-center py-16', isDark ? 'text-slate-400' : 'text-gray-400')}>
           <Calendar className={cn('w-12 h-12 mx-auto mb-3', isDark ? 'text-slate-600' : 'text-gray-200')} />
@@ -128,18 +128,18 @@ export default function AdminEventsPage() {
       ) : (
         <Card padding="none" className="overflow-hidden">
           <table className="w-full text-sm">
-            <thead className={cn('border-b', isDark ? 'bg-slate-700/50 border-slate-700' : 'bg-gray-50 border-gray-100')}>
+            <thead className={cn('border-b', isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-gray-50/80 border-gray-100')}>
               <tr>
-                <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>Title</th>
-                <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>Location</th>
-                <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>Dates</th>
-                <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>Status</th>
-                <th className={cn('text-left px-5 py-3.5 font-semibold', isDark ? 'text-slate-400' : 'text-gray-600')}>Actions</th>
+                <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>Title</th>
+                <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>Location</th>
+                <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>Dates</th>
+                <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>Status</th>
+                <th className={cn('text-left px-5 py-3.5 text-[10px] uppercase font-bold tracking-wider', isDark ? 'text-slate-400' : 'text-gray-500')}>Actions</th>
               </tr>
             </thead>
             <tbody className={cn('divide-y', isDark ? 'divide-slate-700' : 'divide-gray-50')}>
               {events.map((e: any) => (
-                <tr key={e.id} className={cn('transition-colors', isDark ? 'hover:bg-slate-700/40' : 'hover:bg-gray-50')}>
+                <tr key={e.id} className={cn('transition-colors', isDark ? 'hover:bg-slate-800/30' : 'hover:bg-gray-50/50')}>
                   <td className={cn('px-5 py-3.5 font-medium', isDark ? 'text-white' : 'text-gray-800')}>{e.title}</td>
                   <td className={cn('px-5 py-3.5', isDark ? 'text-slate-400' : 'text-gray-500')}>{e.location || '—'}</td>
                   <td className={cn('px-5 py-3.5 text-xs', isDark ? 'text-slate-400' : 'text-gray-500')}>
