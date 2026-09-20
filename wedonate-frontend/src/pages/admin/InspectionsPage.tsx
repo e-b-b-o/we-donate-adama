@@ -48,7 +48,7 @@ export default function InspectionsPage() {
         {['', 'PENDING', 'RESOLVED'].map(s => (
           <button key={s} onClick={() => setStatusFilter(s)}
             className={cn('px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
-              statusFilter === s ? 'bg-green-700 text-white'
+              statusFilter === s ? 'bg-[var(--color-civic-emerald)] text-white'
                 : (isDark ? 'bg-slate-700 text-slate-400 hover:text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-800'))}>
             {s || 'ALL'}
           </button>
@@ -67,7 +67,7 @@ export default function InspectionsPage() {
             <div>
               <label className={cn('block text-sm font-medium mb-1', isDark ? 'text-slate-300' : 'text-gray-700')}>Findings *</label>
               <textarea value={form.findings} onChange={e => setForm(p => ({ ...p, findings: e.target.value }))} rows={4}
-                className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500',
+                className={cn('w-full rounded-xl border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-civic-emerald)]',
                   isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-200')} />
             </div>
             <Input label="Recommendation" value={form.recommendation} onChange={e => setForm(p => ({ ...p, recommendation: e.target.value }))} />
@@ -81,7 +81,7 @@ export default function InspectionsPage() {
 
       {isLoading ? (
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[var(--color-civic-emerald)] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !reports?.length ? (
         <Card className={cn('text-center py-16', isDark ? 'text-slate-400' : 'text-gray-400')}>No inspection reports</Card>
