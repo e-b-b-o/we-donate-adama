@@ -1,5 +1,8 @@
 FROM node:20-alpine AS builder
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 # Copy package files and prisma schema
@@ -21,6 +24,9 @@ RUN npm run build
 # Production Image
 FROM node:20-alpine
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 # Copy package files
@@ -32,6 +38,7 @@ RUN npm ci --omit=dev
 # Copy prisma schema and generated client
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Copy built artifacts
 COPY --from=builder /app/dist ./dist
