@@ -13,6 +13,15 @@ export function formatCurrency(amount: number, currency = 'ETB') {
   }).format(amount);
 }
 
+export function formatCompactCurrency(amount: number, currency = 'ETB') {
+  return new Intl.NumberFormat('en-ET', {
+    style: 'currency',
+    currency,
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(amount);
+}
+
 export function formatDate(date: string | Date) {
   return new Date(date).toLocaleDateString('en-ET', {
     year: 'numeric', month: 'long', day: 'numeric',

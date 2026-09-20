@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../lib/api';
-import { formatCurrency, formatDate } from '../lib/utils';
+import { formatCurrency, formatCompactCurrency, formatDate } from '../lib/utils';
 import { cn } from '../lib/utils';
 import Button from '../components/ui/Button';
 
@@ -60,7 +60,7 @@ export default function HomePage() {
   const stats = {
     donors: statsData?.totalUsers ?? '1,200+',
     beneficiaries: statsData?.fulfilledRequests ?? '500+',
-    raised: statsData?.totalAmount ? formatCurrency(statsData.totalAmount) : 'ETB 2.5M+',
+    raised: statsData?.totalAmount ? formatCompactCurrency(statsData.totalAmount) : 'ETB 2.5M+',
     ngos: statsData?.totalDonations ?? '5,000+',
   };
 

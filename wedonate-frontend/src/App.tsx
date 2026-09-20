@@ -5,6 +5,7 @@ import { useTheme } from './context/ThemeContext';
 import { cn } from './lib/utils';
 import ChatbotWidget from './components/chatbot/ChatbotWidget';
 import LoadingScreen from './components/ui/LoadingScreen';
+import ScrollToTop from './components/ScrollToTop';
 
 // Layouts (Eagerly Loaded)
 import MainLayout from './components/layout/MainLayout';
@@ -158,6 +159,7 @@ function withLayout(children: React.ReactNode, roles?: string[]) {
 export default function App() {
   return (
     <>
+      <ScrollToTop />
       <Suspense fallback={<LoadingScreen />}>
         <Routes>
           {/* Public — but /donate is hidden from admins */}

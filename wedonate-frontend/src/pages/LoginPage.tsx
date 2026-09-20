@@ -72,7 +72,7 @@ export default function LoginPage() {
       isDark ? "bg-[var(--color-surface)] text-white" : "bg-white text-[var(--text-main)]"
     )}>
       {/* ── LEFT COLUMN: Civic Branding & Value Proposition Hero Panel ── */}
-      <div className={cn("relative w-full lg:w-[48%] xl:w-[45%] flex flex-col justify-between p-8 sm:p-12 lg:p-16 overflow-hidden border-b lg:border-b-0 lg:border-r", 
+      <div className={cn("relative hidden lg:flex w-full lg:w-[48%] xl:w-[45%] flex-col justify-between p-8 sm:p-12 lg:p-16 overflow-hidden border-b lg:border-b-0 lg:border-r", 
         isDark ? "border-[var(--border)]" : "border-gray-200"
       )}>
         {/* Background Ambient Cityscape with Civic Green Glow */}
